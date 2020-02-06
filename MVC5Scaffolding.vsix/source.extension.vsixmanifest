@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="CustomBasicScaffolderExtension..40e7bb7e-f72d-44cf-8439-2567be2590c6" Version="3.1" Language="en-US" Publisher="Robin Li" />
+        <DisplayName>Happy Scaffolding for MVC5</DisplayName>
+        <Description xml:space="preserve">Generates ASP.NET MVC 5 for C.R.U.D from an Entity Framework data context and model class.</Description>
+        <MoreInfo>https://github.com/robinli/MVC5-Scaffolder</MoreInfo>
+        <License>LICENSE.txt</License>
+        <Tags>Scaffolding</Tags>
+    </Metadata>
+    <Installation AllUsers="true">
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
+        <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro" />
+        <InstallationTarget Version="[16.0,17.0)" Id="Microsoft.VisualStudio.Community" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="MVC5Scaffolding" Path="|MVC5Scaffolding|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.1.28811.260,17.0)" DisplayName="Visual Studio 核心編輯器" />
+    </Prerequisites>
+</PackageManifest>
