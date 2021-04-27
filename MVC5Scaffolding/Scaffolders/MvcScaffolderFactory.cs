@@ -63,7 +63,7 @@ namespace Happy.Scaffolding.MVC
                 version: new Version(0, 1, 5, 27),
                 id: typeof(MvcScaffolder).Name,
                 icon: ToImageSource(Resources.Application),
-                gestures: new[] { "Controller" },
+                gestures: new[] { "Controller", "View" },
                 categories: new[] { Categories.Common, Categories.MvcController, Categories.Other }
             );              
         }
