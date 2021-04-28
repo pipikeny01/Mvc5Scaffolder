@@ -9,28 +9,25 @@ namespace Happy.Scaffolding.MVC.UI
     /// </summary>
     internal partial class MvcScaffolderDialog : VSPlatformDialogWindow
     {
-        public MvcScaffolderDialog()
+        public MvcScaffolderDialog(MvcCodeGeneratorViewModel viewModel)
         {
+            if (viewModel == null)
+            {
+                throw new ArgumentNullException("viewModel");
+            }
+
+            InitializeComponent();
+
+            //viewModel.PromptForNewDataContextTypeName += model =>
+            //{
+            //    var dialog = new NewDataContextDialog(model);
+            //    var result = dialog.ShowModal();
+            //    model.Canceled = !result.HasValue || !result.Value;
+            //};
+
+            viewModel.Close += result => DialogResult = result;
+
+            DataContext = viewModel;
         }
-        //public MvcScaffolderDialog(MvcCodeGeneratorViewModel viewModel)
-        //{
-        //    if (viewModel == null)
-        //    {
-        //        throw new ArgumentNullException("viewModel");
-        //    }
-            
-        //    InitializeComponent();
-            
-        //    //viewModel.PromptForNewDataContextTypeName += model =>
-        //    //{
-        //    //    var dialog = new NewDataContextDialog(model);
-        //    //    var result = dialog.ShowModal();
-        //    //    model.Canceled = !result.HasValue || !result.Value;
-        //    //};
-
-        //    viewModel.Close += result => DialogResult = result;
-
-        //    DataContext = viewModel;
-        //}
     }
 }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using AietScaffolderVsix.Generator;
+using Happy.Scaffolding.MVC.Scaffolders;
 using Microsoft.AspNet.Scaffolding;
 
 namespace AietMvcScaffolding.Factory
 {
     [Export(typeof(LegacyCodeGeneratorFactory))]
-    public class DoNothingCodeGeneratorFactory : LegacyCodeGeneratorFactory
+    public class MvcScaffolderFactory : LegacyCodeGeneratorFactory
     {
-        public DoNothingCodeGeneratorFactory() :
+        public MvcScaffolderFactory() :
             base(new CodeGeneratorInformation(
                 "DoNothing Code Generator",
                 "Generator that doesn't do anything",
@@ -20,7 +21,8 @@ namespace AietMvcScaffolding.Factory
 
         public override ICodeGenerator CreateInstance(CodeGenerationContext context)
         {
-            return new DoNothingCodeGenerator(context, Information);
+            //return new DoNothingCodeGenerator(context, Information);
+            return new MvcScaffolder(context, Information);
         }
     }
 }

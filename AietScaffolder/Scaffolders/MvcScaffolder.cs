@@ -27,7 +27,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         private MvcCodeGeneratorViewModel _codeGeneratorViewModel;
         private ModelMetadataViewModel _ModelMetadataVM;
 
-        public MvcScaffolder(CodeGenerationContext context, CodeGeneratorInformation information)
+        internal MvcScaffolder(CodeGenerationContext context, CodeGeneratorInformation information)
             : base(context, information)
         {
 
@@ -61,32 +61,33 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // Setting Columns : display name, allow null
         private bool? ShowColumnSetting()
         {
-            var modelType = _codeGeneratorViewModel.ModelType.CodeType;
-            string savefolderPath = Path.Combine(Context.ActiveProject.GetFullPath(), "CodeGen");
-            StorageMan<MetaTableInfo> sm = new StorageMan<MetaTableInfo>(modelType.Name, savefolderPath);
-            MetaTableInfo data = sm.Read();
-            if (data.Columns.Any())
-            {
-                _ModelMetadataVM = new ModelMetadataViewModel(data);
-            }
-            else
-            {
-                string dbContextTypeName = _codeGeneratorViewModel.DbContextModelType.TypeName;
-                ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
-                CodeType dbContext = codeTypeService.GetCodeType(Context.ActiveProject, dbContextTypeName);
-                IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-                ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
-                _ModelMetadataVM = new ModelMetadataViewModel(efMetadata);
-            }
+            //var modelType = _codeGeneratorViewModel.ModelType.CodeType;
+            //string savefolderPath = Path.Combine(Context.ActiveProject.GetFullPath(), "CodeGen");
+            //StorageMan<MetaTableInfo> sm = new StorageMan<MetaTableInfo>(modelType.Name, savefolderPath);
+            //MetaTableInfo data = sm.Read();
+            //if (data.Columns.Any())
+            //{
+            //    _ModelMetadataVM = new ModelMetadataViewModel(data);
+            //}
+            //else
+            //{
+            //    string dbContextTypeName = _codeGeneratorViewModel.DbContextModelType.TypeName;
+            //    ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
+            //    CodeType dbContext = codeTypeService.GetCodeType(Context.ActiveProject, dbContextTypeName);
+            //    IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
+            //    ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
+            //    _ModelMetadataVM = new ModelMetadataViewModel(efMetadata);
+            //}
 
-            ModelMetadataDialog dialog = new ModelMetadataDialog(_ModelMetadataVM);
-            bool? isOk = dialog.ShowModal();
-            if (isOk == true)
-            {
-                sm.Save(_ModelMetadataVM.DataModel);
-            }
+            //ModelMetadataDialog dialog = new ModelMetadataDialog(_ModelMetadataVM);
+            //bool? isOk = dialog.ShowModal();
+            //if (isOk == true)
+            //{
+            //    sm.Save(_ModelMetadataVM.DataModel);
+            //}
 
-            return isOk;
+            //return isOk;
+            return true;
         }
 
         // Validates the model returned by the Visual Studio dialog.
@@ -153,84 +154,84 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // 2) Add View
         private void GenerateCode(Project project, string selectionRelativePath, MvcCodeGeneratorViewModel codeGeneratorViewModel)
         {
-            // Get Model Type
-            var modelType = codeGeneratorViewModel.ModelType.CodeType;
+            //// Get Model Type
+            //var modelType = codeGeneratorViewModel.ModelType.CodeType;
 
-            // Get the dbContext
-            string dbContextTypeName = codeGeneratorViewModel.DbContextModelType.TypeName;
-            ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
-            CodeType dbContext = codeTypeService.GetCodeType(project, dbContextTypeName);
+            //// Get the dbContext
+            //string dbContextTypeName = codeGeneratorViewModel.DbContextModelType.TypeName;
+            //ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
+            //CodeType dbContext = codeTypeService.GetCodeType(project, dbContextTypeName);
 
-            // Get the Entity Framework Meta Data
-            IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-            ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
+            //// Get the Entity Framework Meta Data
+            //IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
+            //ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
 
-            // Create Controller
-            string controllerName = codeGeneratorViewModel.ControllerName;
-            string controllerRootName = controllerName.Replace("Controller","");
-            string outputFolderPath = Path.Combine(selectionRelativePath, controllerName);
-            string viewPrefix = codeGeneratorViewModel.ViewPrefix;
-            string programTitle = codeGeneratorViewModel.ProgramTitle;
+            //// Create Controller
+            //string controllerName = codeGeneratorViewModel.ControllerName;
+            //string controllerRootName = controllerName.Replace("Controller","");
+            //string outputFolderPath = Path.Combine(selectionRelativePath, controllerName);
+            //string viewPrefix = codeGeneratorViewModel.ViewPrefix;
+            //string programTitle = codeGeneratorViewModel.ProgramTitle;
 
-            AddMvcController(project: project
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: outputFolderPath
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , viewPrefix: viewPrefix
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+            //AddMvcController(project: project
+            //    , controllerName: controllerName
+            //    , controllerRootName: controllerRootName
+            //    , outputPath: outputFolderPath
+            //    , ContextTypeName: dbContext.Name
+            //    , modelType: modelType
+            //    , efMetadata: efMetadata
+            //    , viewPrefix: viewPrefix
+            //    , overwrite: codeGeneratorViewModel.OverwriteViews);
 
-            if (!codeGeneratorViewModel.GenerateViews)
-                return;
+            //if (!codeGeneratorViewModel.GenerateViews)
+            //    return;
 
-            // add Metadata for Model
-            outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
-            AddModelMetadata(project: project
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: outputFolderPath
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+            //// add Metadata for Model
+            //outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
+            //AddModelMetadata(project: project
+            //    , controllerName: controllerName
+            //    , controllerRootName: controllerRootName
+            //    , outputPath: outputFolderPath
+            //    , ContextTypeName: dbContext.Name
+            //    , modelType: modelType
+            //    , efMetadata: efMetadata
+            //    , overwrite: codeGeneratorViewModel.OverwriteViews);
             
-            //_ViewStart & Create _Layout
-            string viewRootPath = GetViewsFolderPath(selectionRelativePath);
-            if (codeGeneratorViewModel.LayoutPageSelected)
-            {
-                string areaName = GetAreaName(selectionRelativePath);
-                AddDependencyFile(project, viewRootPath, areaName);
-            }
-            // EditorTemplates, DisplayTemplates
-            AddDataFieldTemplates(project, viewRootPath);
+            ////_ViewStart & Create _Layout
+            //string viewRootPath = GetViewsFolderPath(selectionRelativePath);
+            //if (codeGeneratorViewModel.LayoutPageSelected)
+            //{
+            //    string areaName = GetAreaName(selectionRelativePath);
+            //    AddDependencyFile(project, viewRootPath, areaName);
+            //}
+            //// EditorTemplates, DisplayTemplates
+            //AddDataFieldTemplates(project, viewRootPath);
             
 
-            // Views for  C.R.U.D 
-            string viewFolderPath = Path.Combine(viewRootPath, controllerRootName);
-            foreach (string viewName in new string[4] { "Index", "Create", "Edit", "EditForm" })
-            {
-                //string viewName = string.Format(view, viewPrefix);
-                //未完成
-                /*
-                 Index        CustIndex
-                 Create       CustCreate
-                 Edit           CustEdit
-                 EditForm    CustEditForm
-                 * 
-                 _Edit      _CustEdit
-                 */
+            //// Views for  C.R.U.D 
+            //string viewFolderPath = Path.Combine(viewRootPath, controllerRootName);
+            //foreach (string viewName in new string[4] { "Index", "Create", "Edit", "EditForm" })
+            //{
+            //    //string viewName = string.Format(view, viewPrefix);
+            //    //未完成
+            //    /*
+            //     Index        CustIndex
+            //     Create       CustCreate
+            //     Edit           CustEdit
+            //     EditForm    CustEditForm
+            //     * 
+            //     _Edit      _CustEdit
+            //     */
 
-                AddView(project
-                    , viewFolderPath, viewPrefix, viewName, programTitle
-                    , controllerRootName, modelType, efMetadata
-                    , referenceScriptLibraries: codeGeneratorViewModel.ReferenceScriptLibraries
-                    , isLayoutPageSelected: codeGeneratorViewModel.LayoutPageSelected
-                    , layoutPageFile: codeGeneratorViewModel.LayoutPageFile
-                    , overwrite: codeGeneratorViewModel.OverwriteViews
-                    );
-            }
+            //    AddView(project
+            //        , viewFolderPath, viewPrefix, viewName, programTitle
+            //        , controllerRootName, modelType, efMetadata
+            //        , referenceScriptLibraries: codeGeneratorViewModel.ReferenceScriptLibraries
+            //        , isLayoutPageSelected: codeGeneratorViewModel.LayoutPageSelected
+            //        , layoutPageFile: codeGeneratorViewModel.LayoutPageFile
+            //        , overwrite: codeGeneratorViewModel.OverwriteViews
+            //        );
+            //}
         }
 
 

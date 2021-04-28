@@ -44,6 +44,9 @@
     <Reference Include="Microsoft.AspNet.Scaffolding.12.0, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.AspNet.Scaffolding.EntityFramework.12.0, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -78,6 +81,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Scaffolders\MvcScaffolder.cs" />
     <Compile Include="UI\BindBehavior.cs" />
     <Compile Include="UI\DelegateCommand.cs" />
     <Compile Include="UI\FocusBehavior.cs" />
@@ -95,6 +99,9 @@
     <Compile Include="UI\ViewModel.cs" />
     <Compile Include="UI\ViewModelOfT.cs" />
     <Compile Include="UI\VSPlatformDialogWindow.cs" />
+    <Compile Include="Utils\ProjectItemUtils.cs" />
+    <Compile Include="Utils\StorageMan.cs" />
+    <Compile Include="Utils\VisualStudioUtils.cs" />
     <Compile Include="VsConstants.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -143,6 +150,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>MvcScaffolderDialogResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -154,5 +162,6 @@
   <ItemGroup>
     <Resource Include="Resources\Application.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
