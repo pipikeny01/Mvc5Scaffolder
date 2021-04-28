@@ -2,16 +2,14 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
+using System.Windows.Forms;
+using Microsoft.VisualStudio.VCProjectEngine;
 
 namespace Happy.Scaffolding.MVC.Utils
 {
     internal class VisualStudioUtils
     {
-
         private DTE2 _dte;
 
         internal VisualStudioUtils()
@@ -27,10 +25,32 @@ namespace Happy.Scaffolding.MVC.Utils
             {
                 throw new NullReferenceException("project");
             }
-
             _dte.Solution.SolutionBuild.BuildProject(solutionConfiguration, project.FullName, true);
         }
 
+        internal Project FindProjectByName(string name)
+        {
+            foreach (Project project in _dte.Solution.Projects)
+            {
+                if (project.Name == name)
+                    return project;
+            }
 
+            MessageBox.Show($"找不到專案:{name}");
+
+            return null;
+        }
+
+        public void Build()
+        {
+            _dte.Solution.SolutionBuild.Build(true);
+        }
+
+        public void MoveFile(Project project, string outputFolderPath)
+        {
+            var findProjectByName = FindProjectByName("DAL");
+            findProjectByName.ProjectItems.AddFromFile(
+                "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Controllers\\Line\\LineApiController.cs");
+        }
     }
 }

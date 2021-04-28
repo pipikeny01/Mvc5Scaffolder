@@ -23,10 +23,13 @@ namespace Happy.Scaffolding.MVC.Scaffolders
     {
         private MvcCodeGeneratorViewModel _codeGeneratorViewModel;
         private ModelMetadataViewModel _ModelMetadataVM;
+        private VisualStudioUtils _visualStudioUtils;
 
         public MvcScaffolder(CodeGenerationContext context, CodeGeneratorInformation information)
             : base(context, information)
         {
+            _visualStudioUtils = new VisualStudioUtils();
+
         }
 
         //public override IEnumerable<string> TemplateFolders
@@ -47,6 +50,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // are modal is still an open question and tracked by bug 578173.
         public override bool ShowUIAndValidate()
         {
+
             _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(Context);
 
             MvcScaffolderDialog window = new MvcScaffolderDialog(_codeGeneratorViewModel);
@@ -118,8 +122,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             // always force the project to build so we have a compiled
             // model that we can use with the Entity Framework
-            var visualStudioUtils = new VisualStudioUtils();
-            visualStudioUtils.BuildProject(Context.ActiveProject);
+            //visualStudioUtils.BuildProject(Context.ActiveProject);
+            _visualStudioUtils.Build();
 
             Type reflectedModelType = GetReflectionType(modelType.FullName);
             if (reflectedModelType == null)
@@ -134,6 +138,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         {
             var project = Context.ActiveProject;
             var selectionRelativePath = GetSelectionRelativePath();
+            var modelFolderPath = GetModelFolderPath(selectionRelativePath);
 
             if (_codeGeneratorViewModel == null)
             {
@@ -143,8 +148,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             Cursor currentCursor = Mouse.OverrideCursor;
             try
             {
+                
                 Mouse.OverrideCursor = Cursors.Wait;
-
                 GenerateCode(project, selectionRelativePath, this._codeGeneratorViewModel);
             }
             finally
@@ -187,8 +192,27 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , viewPrefix: viewPrefix
                 , overwrite: codeGeneratorViewModel.OverwriteViews);
 
+
+            //TODO: 不知道怎麼Move到其他專案
+            //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath() , controllerName);
+            //_visualStudioUtils.MoveFile(project, outputFullPath);
+
             if (!codeGeneratorViewModel.GenerateViews)
                 return;
+
+
+
+            // add ViewModel
+            //outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
+            //AddModelMetadata(project: project
+            //    , controllerName: controllerName
+            //    , controllerRootName: controllerRootName
+            //    , outputPath: outputFolderPath
+            //    , ContextTypeName: dbContext.Name
+            //    , modelType: modelType
+            //    , efMetadata: efMetadata
+            //    , overwrite: codeGeneratorViewModel.OverwriteViews);
+
 
             // add Metadata for Model
             //outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
@@ -293,6 +317,9 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , templateName: templatePath
                 , templateParameters: templateParams
                 , skipIfExists: !overwrite);
+
+
+
         }
 
         private string GetTypeVariable(string typeName)
