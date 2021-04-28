@@ -91,6 +91,9 @@
     <Compile Include="Scaffolders\MvcScaffolder.cs" />
     <Compile Include="Scaffolders\MvcScaffolderFactory.cs" />
     <None Include="packages.config" />
+    <None Include="Templates\MvcScaffolder\ApiControllerWithContext\Controller.cs.t4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\MvcScaffolder\MvcScaffolderSP\MvcControllerWithContext\Controller.cs.t4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
