@@ -58,8 +58,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\MetaColumnInfo.cs" />
+    <Compile Include="Model\MetaTableInfo.cs" />
     <Compile Include="UI\BindBehavior.cs" />
     <Compile Include="UI\FocusBehavior.cs" />
+    <Compile Include="UI\ModelMetadataViewModel.cs" />
+    <Compile Include="UI\MvcCodeGeneratorViewModel.cs" />
     <Compile Include="UI\MvcScaffolderDialog.xaml.cs">
       <DependentUpon>MvcScaffolderDialog.xaml</DependentUpon>
     </Compile>
@@ -68,6 +72,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="UI\ViewModel.cs" />
+    <Compile Include="UI\ViewModelOfT.cs" />
     <Compile Include="UI\VSPlatformDialogWindow.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
