@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
 
-namespace AietScaffolder
+namespace AietScaffolderVsix
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -24,13 +24,13 @@ namespace AietScaffolder
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(AietScaffolderPackage.PackageGuidString)]
-    public sealed class AietScaffolderPackage : AsyncPackage
+    [Guid(AietScaffolderVsixPackage.PackageGuidString)]
+    public sealed class AietScaffolderVsixPackage : AsyncPackage
     {
         /// <summary>
-        /// AietScaffolderPackage GUID string.
+        /// AietScaffolderVsixPackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "bf5feda7-aaad-470b-a2b7-d975e8df33ab";
+        public const string PackageGuidString = "12163a05-a7a8-4f63-9974-0d2fe2a198f0";
 
         #region Package Members
 
