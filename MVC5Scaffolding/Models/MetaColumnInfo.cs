@@ -16,7 +16,10 @@ namespace Happy.Scaffolding.MVC.Models
         public int RangeMin { get; set; }
         public int RangeMax { get; set; }
 
-        public bool IsVisible { get; set; }
+        //list ViewModel 顯示
+        public bool IsListVisible { get; set; }
+        //Edit ViewModel 顯示
+        public bool IsEditVisible { get; set; }
 
         public bool IsNumeric
         {
@@ -91,7 +94,7 @@ namespace Happy.Scaffolding.MVC.Models
 
             DisplayName = this.Name;
             Nullable = true;
-            IsVisible = true;
+            IsListVisible = true;
         }
 
         public euColumnType GetColumnType(string shortTypeName)

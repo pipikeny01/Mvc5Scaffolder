@@ -70,6 +70,8 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="NameColumn1" />
+                    <ColumnDefinition SharedSizeGroup="colListViewModel"/>
+                    <ColumnDefinition SharedSizeGroup="colEditViewModel"/>
                     <ColumnDefinition SharedSizeGroup="NameColumn2" />
                     <ColumnDefinition SharedSizeGroup="NameColumn3" />
                     <ColumnDefinition SharedSizeGroup="NameColumn4" />
@@ -77,17 +79,23 @@
                 </Grid.ColumnDefinitions>
                 <Border TextBlock.TextAlignment="Center" Grid.Column="0">
                     <TextBlock Text="Column"/>
-                </Border>
-                <Border TextBlock.TextAlignment="Center" Grid.Column="1">
-                    <TextBlock Text="Display Name" />
+                </Border>  
+                <Border TextBlock.TextAlignment="Center" Grid.Column="1" >
+                    <TextBlock Text="顯示List"/>
                 </Border>
                 <Border TextBlock.TextAlignment="Center" Grid.Column="2">
-                    <TextBlock Text="Nullable" />
+                    <TextBlock Text="顯示Edit"/>
                 </Border>
                 <Border TextBlock.TextAlignment="Center" Grid.Column="3">
-                    <TextBlock Text="Reange / MaxLength" />
+                    <TextBlock Text="Display Name" />
                 </Border>
                 <Border TextBlock.TextAlignment="Center" Grid.Column="4">
+                    <TextBlock Text="Nullable" />
+                </Border>
+                <Border TextBlock.TextAlignment="Center" Grid.Column="5">
+                    <TextBlock Text="Reange / MaxLength" />
+                </Border>
+                <Border TextBlock.TextAlignment="Center" Grid.Column="6">
                     <TextBlock Text="Type" />
                 </Border>
             </Grid>
@@ -101,6 +109,8 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition SharedSizeGroup="NameColumn1" Width="100" />
+                                <ColumnDefinition SharedSizeGroup="colListViewModel" Width="60"/>
+                                <ColumnDefinition SharedSizeGroup="colEditViewModel" Width="60"/>
                                 <ColumnDefinition SharedSizeGroup="NameColumn2" Width="150"/>
                                 <ColumnDefinition SharedSizeGroup="NameColumn3" Width="50"/>
                                 <ColumnDefinition SharedSizeGroup="NameColumn4" Width="150" />
@@ -111,13 +121,23 @@
                                 <TextBlock Text="{Binding Name}" Margin="0,4,8,0" HorizontalAlignment="Right"></TextBlock>
                             </Grid>
 
-                            <TextBox Text="{Binding Path=DisplayName}"  Grid.Column="1"></TextBox>
-
+                            <Grid Grid.Column="1" Width="20">
+                                <CheckBox IsChecked="{Binding Path=IsListVisible}" Margin="0,4,0,0"></CheckBox>
+                            </Grid>
                             <Grid Grid.Column="2" Width="20">
+                                <CheckBox IsChecked="{Binding Path=IsEditVisible}" Margin="0,4,0,0"></CheckBox>
+                            </Grid>
+
+                            <Grid Grid.Column="3" Name="NameColumn2">
+                                <TextBox  Text="{Binding Path=DisplayName}"  ></TextBox>
+                            </Grid>
+                             
+
+                            <Grid Grid.Column="4" Width="20">
                                 <CheckBox IsChecked="{Binding Nullable}" Margin="0,4,0,0"></CheckBox>
                             </Grid>
 
-                            <StackPanel Grid.Column="3"  Orientation="Horizontal" Margin="4,0,0,0">
+                            <StackPanel Grid.Column="5"  Orientation="Horizontal" Margin="4,0,0,0">
                                 <StackPanel Orientation="Horizontal" Visibility="{Binding ShowEditorMaxLength}" >
                                     <TextBlock Margin="0,4,0,4" Text="max length" />
                                     <TextBox Text="{Binding Path=MaxLength}" Width="30" TextAlignment="Right"></TextBox>
@@ -130,7 +150,7 @@
                                 </StackPanel>
                             </StackPanel>
 
-                            <TextBlock Margin="0,0,0,0" Text="{Binding strDateType}" Grid.Column="4"></TextBlock>
+                            <TextBlock Grid.Column="6" Margin="0,0,0,0" Text="{Binding strDateType}" ></TextBlock>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

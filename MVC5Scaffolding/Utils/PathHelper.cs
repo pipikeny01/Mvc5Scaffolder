@@ -21,5 +21,22 @@ namespace Happy.Scaffolding.MVC.Utils
                 "Repository",
                 codeGeneratorViewModel.ModelType.ShortName + "Repos");
         }
+
+        public static string ListViewModelOutPath(MvcCodeGeneratorViewModel codeGeneratorViewModel)
+        {
+            return Path.Combine(
+                "AppCode",
+                "Project",
+                "ViewModel",
+                codeGeneratorViewModel.ModelType.ShortName + "ListViewModel");
+        }
+        public static string EditViewModelOutPath(MvcCodeGeneratorViewModel codeGeneratorViewModel)
+        {
+            return Path.Combine(
+                "AppCode",
+                "Project",
+                "ViewModel",
+                codeGeneratorViewModel.ModelType.ShortName + "EditViewModel");
+        }
     }
 }

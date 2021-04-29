@@ -22,14 +22,14 @@ namespace Happy.Scaffolding.MVC.UI {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class MvcScaffolderDialogResources {
+    public class MvcScaffolderDialogResources_en {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MvcScaffolderDialogResources() {
+        internal MvcScaffolderDialogResources_en() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Happy.Scaffolding.MVC.UI {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Happy.Scaffolding.MVC.UI.MvcScaffolderDialogResources", typeof(MvcScaffolderDialogResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Happy.Scaffolding.MVC.UI.MvcScaffolderDialogResources-en", typeof(MvcScaffolderDialogResources_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,7 +79,7 @@ namespace Happy.Scaffolding.MVC.UI {
         }
         
         /// <summary>
-        ///   查詢類似 取消 的當地語系化字串。
+        ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
         public static string CancelButton_Content {
             get {
@@ -88,7 +88,7 @@ namespace Happy.Scaffolding.MVC.UI {
         }
         
         /// <summary>
-        ///   查詢類似 確認後繼續 的當地語系化字串。
+        ///   查詢類似 Confirm and continue. 的當地語系化字串。
         /// </summary>
         public static string CheckBox_IsConfirm {
             get {

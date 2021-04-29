@@ -180,16 +180,30 @@ namespace Happy.Scaffolding.MVC.UI
             }
         }
 
-        public bool IsVisible
+        public bool IsListVisible
         {
-            get { return DataModel.IsVisible; }
+            get { return DataModel.IsListVisible; }
             set
             {
-                if (value == DataModel.IsVisible)
+                if (value == DataModel.IsListVisible)
                 {
                     return;
                 }
-                DataModel.IsVisible = value;
+                DataModel.IsListVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsEditVisible
+        {
+            get { return DataModel.IsEditVisible; }
+            set
+            {
+                if (value == DataModel.IsEditVisible)
+                {
+                    return;
+                }
+                DataModel.IsEditVisible = value;
                 OnPropertyChanged();
             }
         }

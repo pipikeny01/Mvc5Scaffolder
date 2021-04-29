@@ -122,7 +122,7 @@ namespace Happy.Scaffolding.MVC.UI
                 _modelType = value;
                 OnPropertyChanged();
 
-                _ControllerName = _modelType.ShortName + "Controller";
+                _ControllerName = _modelType.ShortName + "ApiController";
                 OnPropertyChanged(m => m.ControllerName);
 
                 _ProgramTitle = _modelType.ShortName;

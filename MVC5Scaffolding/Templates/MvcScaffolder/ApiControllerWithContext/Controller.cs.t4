@@ -68,14 +68,7 @@ namespace <#= Namespace #>
     }
 #>
 
-    //此為範例 , 所以沒有將class 放到個別的位置去
-    //實際專案
-    //Service 放到 WebApp\AppCode\Project\Service
-    //ViewModel 放到 WebApp\AppCode\Project\ViewModel
-    //Profiles 放到 WebApp\AppCode\Project\Profiles
-    //Repos 放到 DAL\DAL\Project\Repository
     //有需要匯出就實作IExportExcelApiController
-
        public class <#= ControllerName #> : BaseApiController,
        ICrudApiController< <#= queryDto #>,<#= editViewMoel #>>
     {

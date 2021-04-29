@@ -108,6 +108,9 @@
     <Compile Include="Scaffolders\MvcScaffolder.cs" />
     <Compile Include="Scaffolders\MvcScaffolderFactory.cs" />
     <None Include="packages.config" />
+    <None Include="Templates\MvcScaffolder\ApiControllerWithContext\ListViewModel.cs.t4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\MvcScaffolder\ApiControllerWithContext\Repository.cs.t4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -192,6 +195,11 @@
     <Compile Include="UI\ModelMetadataViewModel.cs" />
     <Compile Include="UI\MethodType.cs" />
     <Compile Include="UI\ModelType.cs" />
+    <Compile Include="UI\MvcScaffolderDialogResources-en.Designer.cs">
+      <DependentUpon>MvcScaffolderDialogResources-en.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="UI\QueryFormSetting.xaml.cs">
       <DependentUpon>QueryFormSetting.xaml</DependentUpon>
     </Compile>
@@ -228,6 +236,10 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MvcScaffolderDialogResources-en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MvcScaffolderDialogResources-en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MvcScaffolderDialogResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
