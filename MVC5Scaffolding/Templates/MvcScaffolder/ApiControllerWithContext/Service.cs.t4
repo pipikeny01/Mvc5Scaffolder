@@ -23,16 +23,15 @@
 string routePrefix = "api/" + ControllerRootName;
 #>
 using AutoMapper;
-using DAL.Core.Dto;
-using System.Web.Http;
+using DAL.Core;
 using DAL.Project.Model;
 using DAL.Project.Repository;
 using WebApp.AppCode.Core;
-using WebApp.AppCode.Core.Filter;
-using WebApp.AppCode.Project.Service;
-using WebApp.AppCode.Sys.ViewModel;
+using WebApp.AppCode.Sys.Service.Base;
+using WebApp.AppCode.Sys.Service.Dto;
+using WebApp.Controllers.Project;
 
-namespace <#= Namespace #>
+namespace WebApp.AppCode.Project.Service
 {
 <#
     var entitySetName = ModelMetadata.EntitySetName;
@@ -68,90 +67,68 @@ namespace <#= Namespace #>
     }
 #>
 
-    //此為範例 , 所以沒有將class 放到個別的位置去
-    //實際專案
-    //Service 放到 WebApp\AppCode\Project\Service
-    //ViewModel 放到 WebApp\AppCode\Project\ViewModel
-    //Profiles 放到 WebApp\AppCode\Project\Profiles
-    //Repos 放到 DAL\DAL\Project\Repository
-    //有需要匯出就實作IExportExcelApiController
-
-       public class <#= ControllerName #> : BaseApiController,
-       ICrudApiController< <#= queryDto #>,<#= editViewMoel #>>
+     
+    public interface <#= iserviceName #> : ICrudService<<#= queryDto #>, <#= viewMoel #>, <#= editViewMoel #>>
     {
-        private readonly <#= iserviceName #>  <#= serviceFieldName #> ;
-
-        public  <#= ControllerName #>(<#= iserviceName #> <#= FirstCharLower(entitySetName) #>Service)
-        {
-            <#= serviceFieldName #> = <#= FirstCharLower(entitySetName) #>Service;
-        }
-
-        [HttpPost]
-        [PowerQuery]
-        public IHttpActionResult List(<#= queryDto #> query)
-        {
-           var selectDataModel = <#= serviceFieldName #>.SelectDataModel(query);
-            AppendPower(selectDataModel);
-            return Ok(selectDataModel);
-        }
-
-        [HttpGet]
-        [PowerQuery]
-        public IHttpActionResult GetViewModel(int id)
-        {
-            return Ok(<#= serviceFieldName #>.GetViewModel(id));
-        }
-
-
-        [HttpPost]
-        [PowerCreate]
-        public IHttpActionResult Create(<#= editViewMoel #> model)
-        {
-            return Ok(<#= serviceFieldName #>.CreateFormViewModel(model));
-
-        }
-
-        [HttpPost]
-        [PowerEdit]
-        public IHttpActionResult Update(<#= editViewMoel #>  model)
-        {
-            <#= serviceFieldName #>.EditFormViewModel(model);
-            return Ok();
-        }
-
-        [HttpPost]
-        [PowerDelete]
-        public IHttpActionResult Delete(DeleteDto dto)
-        {
-            <#= serviceFieldName #>.Delete(dto.Id);
-            return Ok();
-        }       
     }
     
-    public class <#= viewMoel #> : BaseListViewModel
+    public class <#=serviceName#> : BaseService, <#= iserviceName #>
     {
-    
-    }
+        private readonly I<#= entifyName #>Repos <#=repos#>;
 
-    public class <#= viewMoel #>Profile : Profile
-    {
-        public <#= viewMoel #>Profile()
+        public <#=serviceName#>(IUnitOfWork db, IMapper mapper) : base(db, mapper)
         {
-            CreateMap<<#= entifyName #>, <#= viewMoel #>>();
+            <#=repos#> = _db.CreateRepos<I<#= entifyName #>Repos,<#= entifyName #>Repos>();
+        }
+
+        #region <#= iserviceName #> Members
+
+        public ResponseListDto<<#= viewMoel #>> SelectDataModel(<#= queryDto #> query)
+        {
+            MappingCustomSortBy<<#= viewMoel #>>(query);
+
+            var queryResult = <#= repos #>.ListQuery(query);
+
+            return ResponseList<<#= viewMoel #>,<#= entifyName #>>(queryResult);
+        }
+
+        public <#= editViewMoel #> GetViewModel(int id)
+        {
+            if (id == 0)
+                return new <#= editViewMoel #>();
+
+            var entity = <#=repos#>.FindEdit(id);
+            return _mapper.Map<<#= editViewMoel #>>(entity);
+        }
+
+        public int CreateFormViewModel(<#= editViewMoel #> model)
+        {
+            var entity = _mapper.Map<<#= entifyName #>>(model);
+            <#=repos#>.Create(entity);
+            _db.Save();
+            return entity.<#= primaryKeyName #>;
+        }
+
+        public <#= editViewMoel #> EditFormViewModel(<#= editViewMoel #> model)
+        {
+            var entity = _mapper.Map<<#= entifyName #>>(model);
+
+            <#=repos#>.Update(entity);
+            _db.Save();
+            return model;
 
         }
-    }
-    public class  <#= editViewMoel #> : BaseEditViewModel
-    {
-         }
-    public class <#= editViewMoel #>Profile : Profile
-    {
-        public <#= editViewMoel #>Profile()
-        {
-            CreateMap<<#= entifyName #>, <#= editViewMoel #>>();
-            CreateMap<<#= editViewMoel #>, <#= entifyName #>>();
 
+        public void Delete(int id)
+        {
+            var entity = <#= repos #>.Find(id);
+            <#= repos #>.Delete(entity);
+            _db.Save();
         }
+
+        #endregion
     }
+
+
 
 }

@@ -19,6 +19,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
     // 1) ShowUIAndValidate() - displays the Visual Studio dialog for setting scaffolding options
     // 2) Validate() - validates the model collected from the dialog
     // 3) GenerateCode() - if all goes well, generates the scaffolding output from the templates
+
     public class MvcScaffolder : CodeGenerator
     {
         private MvcCodeGeneratorViewModel _codeGeneratorViewModel;
@@ -26,10 +27,9 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         private VisualStudioUtils _visualStudioUtils;
 
         public MvcScaffolder(CodeGenerationContext context, CodeGeneratorInformation information)
-            : base(context, information)
+            : base(context: context, information: information)
         {
             _visualStudioUtils = new VisualStudioUtils();
-
         }
 
         //public override IEnumerable<string> TemplateFolders
@@ -54,10 +54,9 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), "");
             //_visualStudioUtils.MoveFile(Context.ActiveProject, outputFullPath + ".cs");
 
+            _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(context: Context);
 
-            _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(Context);
-
-            MvcScaffolderDialog window = new MvcScaffolderDialog(_codeGeneratorViewModel);
+            MvcScaffolderDialog window = new MvcScaffolderDialog(viewModel: _codeGeneratorViewModel);
             bool? isOk = window.ShowModal();
 
             if (isOk == true)
@@ -76,28 +75,28 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         private bool? ShowColumnSetting()
         {
             var modelType = _codeGeneratorViewModel.ModelType.CodeType;
-            string savefolderPath = Path.Combine(Context.ActiveProject.GetFullPath(), "CodeGen");
-            StorageMan<MetaTableInfo> sm = new StorageMan<MetaTableInfo>(modelType.Name, savefolderPath);
+            string savefolderPath = Path.Combine(path1: Context.ActiveProject.GetFullPath(), path2: "CodeGen");
+            StorageMan<MetaTableInfo> sm = new StorageMan<MetaTableInfo>(modelTypeName: modelType.Name, savefolderPath: savefolderPath);
             MetaTableInfo data = sm.Read();
             if (data.Columns.Any())
             {
-                _ModelMetadataVM = new ModelMetadataViewModel(data);
+                _ModelMetadataVM = new ModelMetadataViewModel(dataModel: data);
             }
             else
             {
                 string dbContextTypeName = _codeGeneratorViewModel.DbContextModelType.TypeName;
                 ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
-                CodeType dbContext = codeTypeService.GetCodeType(Context.ActiveProject, dbContextTypeName);
+                CodeType dbContext = codeTypeService.GetCodeType(project: Context.ActiveProject, fullName: dbContextTypeName);
                 IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-                ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
-                _ModelMetadataVM = new ModelMetadataViewModel(efMetadata);
+                ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+                _ModelMetadataVM = new ModelMetadataViewModel(efMetadata: efMetadata);
             }
 
-            ModelMetadataDialog dialog = new ModelMetadataDialog(_ModelMetadataVM);
+            ModelMetadataDialog dialog = new ModelMetadataDialog(viewModel: _ModelMetadataVM);
             bool? isOk = dialog.ShowModal();
             if (isOk == true)
             {
-                sm.Save(_ModelMetadataVM.DataModel);
+                sm.Save(data: _ModelMetadataVM.DataModel);
             }
 
             return isOk;
@@ -116,12 +115,12 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             if (modelType == null)
             {
-                throw new InvalidOperationException(Resources.WebFormsScaffolder_SelectModelType);
+                throw new InvalidOperationException(message: Resources.WebFormsScaffolder_SelectModelType);
             }
 
-            if (dbContextType == null || String.IsNullOrEmpty(dbContextTypeName))
+            if (dbContextType == null || String.IsNullOrEmpty(value: dbContextTypeName))
             {
-                throw new InvalidOperationException(Resources.WebFormsScaffolder_SelectDbContextType);
+                throw new InvalidOperationException(message: Resources.WebFormsScaffolder_SelectDbContextType);
             }
 
             // always force the project to build so we have a compiled
@@ -129,10 +128,10 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //visualStudioUtils.BuildProject(Context.ActiveProject);
             _visualStudioUtils.Build();
 
-            Type reflectedModelType = GetReflectionType(modelType.FullName);
+            Type reflectedModelType = GetReflectionType(typeName: modelType.FullName);
             if (reflectedModelType == null)
             {
-                throw new InvalidOperationException(Resources.WebFormsScaffolder_ProjectNotBuilt);
+                throw new InvalidOperationException(message: Resources.WebFormsScaffolder_ProjectNotBuilt);
             }
         }
 
@@ -142,19 +141,18 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         {
             var project = Context.ActiveProject;
             var selectionRelativePath = GetSelectionRelativePath();
-            var modelFolderPath = GetModelFolderPath(selectionRelativePath);
+            var modelFolderPath = GetModelFolderPath(selectionRelativePath: selectionRelativePath);
 
             if (_codeGeneratorViewModel == null)
             {
-                throw new InvalidOperationException(Resources.WebFormsScaffolder_ShowUIAndValidateNotCalled);
+                throw new InvalidOperationException(message: Resources.WebFormsScaffolder_ShowUIAndValidateNotCalled);
             }
 
             Cursor currentCursor = Mouse.OverrideCursor;
             try
             {
-                project = _visualStudioUtils.FindProjectByName("DAL").Object;
                 Mouse.OverrideCursor = Cursors.Wait;
-                GenerateCode(project, selectionRelativePath, this._codeGeneratorViewModel);
+                GenerateCode(project: project, selectionRelativePath: selectionRelativePath, codeGeneratorViewModel: this._codeGeneratorViewModel);
             }
             finally
             {
@@ -173,16 +171,16 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             // Get the dbContext
             string dbContextTypeName = codeGeneratorViewModel.DbContextModelType.TypeName;
             ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
-            CodeType dbContext = codeTypeService.GetCodeType(project, dbContextTypeName);
+            CodeType dbContext = codeTypeService.GetCodeType(project: project, fullName: dbContextTypeName);
 
             // Get the Entity Framework Meta Data
             IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-            ModelMetadata efMetadata = efService.AddRequiredEntity(Context, dbContextTypeName, modelType.FullName);
+            ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
 
             // Create Controller
             string controllerName = codeGeneratorViewModel.ControllerName;
-            string controllerRootName = controllerName.Replace("Controller", "");
-            string outputFolderPath = Path.Combine(selectionRelativePath, controllerName);
+            string controllerRootName = controllerName.Replace(oldValue: "Controller", newValue: "");
+            string outputFolderPath = Path.Combine(path1: selectionRelativePath, path2: controllerName);
             string viewPrefix = codeGeneratorViewModel.ViewPrefix;
             string programTitle = codeGeneratorViewModel.ProgramTitle;
 
@@ -196,11 +194,29 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , viewPrefix: viewPrefix
                 , overwrite: codeGeneratorViewModel.OverwriteViews);
 
+            AddService(project: project
+                , controllerName: controllerName
+                , controllerRootName: controllerRootName
+                , outputPath: PathHelper.ServiceOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                , ContextTypeName: dbContext.Name
+                , modelType: modelType
+                , efMetadata: efMetadata
+                , viewPrefix: viewPrefix
+                , overwrite: codeGeneratorViewModel.OverwriteViews);
+
+            project = _visualStudioUtils.FindProjectByName("DAL").Object;
+            AddRepository(project: project
+                , controllerName: controllerName
+                , controllerRootName: controllerRootName
+                , outputPath: PathHelper.RepositoryOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                , ContextTypeName: dbContext.Name
+                , modelType: modelType
+                , efMetadata: efMetadata
+                , viewPrefix: viewPrefix
+                , overwrite: codeGeneratorViewModel.OverwriteViews);
 
             if (!codeGeneratorViewModel.GenerateViews)
                 return;
-
-
 
             // add ViewModel
             //outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
@@ -212,7 +228,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //    , modelType: modelType
             //    , efMetadata: efMetadata
             //    , overwrite: codeGeneratorViewModel.OverwriteViews);
-
 
             // add Metadata for Model
             //outputFolderPath = Path.Combine(GetModelFolderPath(selectionRelativePath), modelType.Name + "Metadata");
@@ -273,43 +288,97 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             , bool overwrite = false
             )
         {
+            AddControllerHandler(project: project,
+                controllerName: controllerName,
+                controllerRootName: controllerRootName,
+                outputPath: outputPath,
+                ContextTypeName: ContextTypeName,
+                modelType: modelType,
+                efMetadata: efMetadata,
+                viewPrefix: viewPrefix,
+                overwrite: overwrite, t4Name: "Controller");
+        }
+
+
+        private void AddService(Project project,
+            string controllerName,
+            string controllerRootName,
+            string outputPath,
+            string ContextTypeName /*"Entities"*/,
+            CodeType modelType,
+            ModelMetadata efMetadata,
+            string viewPrefix,
+            bool overwrite = false
+    )
+        {
+            AddControllerHandler(project: project,
+                controllerName: controllerName,
+                controllerRootName: controllerRootName,
+                outputPath: outputPath,
+                ContextTypeName: ContextTypeName,
+                modelType: modelType,
+                efMetadata: efMetadata,
+                viewPrefix: viewPrefix,
+                overwrite: overwrite, t4Name: "Service");
+        }
+        private void AddRepository(Project project,
+            string controllerName,
+            string controllerRootName,
+            string outputPath,
+            string ContextTypeName /*"Entities"*/,
+            CodeType modelType,
+            ModelMetadata efMetadata,
+            string viewPrefix,
+            bool overwrite = false
+    )
+        {
+            AddControllerHandler(project: project,
+                controllerName: controllerName,
+                controllerRootName: controllerRootName,
+                outputPath: outputPath,
+                ContextTypeName: ContextTypeName,
+                modelType: modelType,
+                efMetadata: efMetadata,
+                viewPrefix: viewPrefix,
+                overwrite: overwrite, t4Name: "Repository");
+        }
+        private void AddControllerHandler(Project project, string controllerName, string controllerRootName, string outputPath,
+            string ContextTypeName, CodeType modelType, ModelMetadata efMetadata, string viewPrefix, bool overwrite, string t4Name)
+        {
             if (modelType == null)
             {
-                throw new ArgumentNullException("modelType");
+                throw new ArgumentNullException(paramName: "modelType");
             }
-            if (String.IsNullOrEmpty(controllerName))
+
+            if (String.IsNullOrEmpty(value: controllerName))
             {
                 //TODO
-                throw new ArgumentException(Resources.WebFormsViewScaffolder_EmptyActionName, "webFormsName");
+                throw new ArgumentException(message: Resources.WebFormsViewScaffolder_EmptyActionName, paramName: "webFormsName");
             }
 
             PropertyMetadata primaryKey = efMetadata.PrimaryKeys.FirstOrDefault();
             string pluralizedName = efMetadata.EntitySetName;
             string modelNameSpace = modelType.Namespace != null ? modelType.Namespace.FullName : String.Empty;
-            string relativePath = outputPath.Replace(@"\", @"/");
+            string relativePath = outputPath.Replace(oldValue: @"\", newValue: @"/");
 
             //Project project = Context.ActiveProject;
-            var templatePath = Path.Combine("ApiControllerWithContext", "Controller");
+            var templatePath = Path.Combine(path1: "ApiControllerWithContext", path2: t4Name);
             var defaultNamespace = GetDefaultNamespace();
-            string modelTypeVariable = GetTypeVariable(modelType.Name);
-            string bindAttributeIncludeText = GetBindAttributeIncludeText(efMetadata);
+            string modelTypeVariable = GetTypeVariable(typeName: modelType.Name);
+            string bindAttributeIncludeText = GetBindAttributeIncludeText(efMetadata: efMetadata);
 
-            Dictionary<string, object> templateParams = new Dictionary<string, object>(){
-                {"ControllerName", controllerName}
-                , {"ControllerRootName" , controllerRootName}
-                , {"Namespace", defaultNamespace}
-                , {"AreaName", string.Empty}
-                , {"ContextTypeName", ContextTypeName}
-                , {"ModelTypeName", modelType.Name}
-                , {"ModelVariable", modelTypeVariable}
-                , {"ModelMetadata", efMetadata}
-                , {"EntitySetVariable", modelTypeVariable}
-                , {"UseAsync", false}
-                , {"IsOverpostingProtectionRequired", true}
-                , {"BindAttributeIncludeText", bindAttributeIncludeText}
-                , {"OverpostingWarningMessage", "To protect from overposting attacks, please enable the specific properties you want to bind to, for more details see http://go.microsoft.com/fwlink/?LinkId=317598."}
-                , {"RequiredNamespaces", new HashSet<string>(){modelType.Namespace.FullName}}
-                , {"ViewPrefix", viewPrefix}
+            Dictionary<string, object> templateParams = new Dictionary<string, object>()
+            {
+                {"ControllerName", controllerName}, {"ControllerRootName", controllerRootName}, {"Namespace", defaultNamespace},
+                {"AreaName", string.Empty}, {"ContextTypeName", ContextTypeName}, {"ModelTypeName", modelType.Name},
+                {"ModelVariable", modelTypeVariable}, {"ModelMetadata", efMetadata}, {"EntitySetVariable", modelTypeVariable},
+                {"UseAsync", false}, {"IsOverpostingProtectionRequired", true},
+                {"BindAttributeIncludeText", bindAttributeIncludeText},
+                {
+                    "OverpostingWarningMessage",
+                    "To protect from overposting attacks, please enable the specific properties you want to bind to, for more details see http://go.microsoft.com/fwlink/?LinkId=317598."
+                },
+                {"RequiredNamespaces", new HashSet<string>() {modelType.Namespace.FullName}}, {"ViewPrefix", viewPrefix}
             };
 
             AddFileFromTemplate(project: project
@@ -317,14 +386,11 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , templateName: templatePath
                 , templateParameters: templateParams
                 , skipIfExists: !overwrite);
-
-
-
         }
 
         private string GetTypeVariable(string typeName)
         {
-            return typeName.Substring(0, 1).ToLower() + typeName.Substring(1, typeName.Length - 1);
+            return typeName.Substring(startIndex: 0, length: 1).ToLower() + typeName.Substring(startIndex: 1, length: typeName.Length - 1);
         }
 
         private string GetBindAttributeIncludeText(ModelMetadata efMetadata)
@@ -332,7 +398,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             string result = "";
             foreach (PropertyMetadata m in efMetadata.Properties)
                 result += "," + m.PropertyName;
-            return result.Substring(1);
+            return result.Substring(startIndex: 1);
         }
 
         private void AddModelMetadata(Project project
@@ -346,24 +412,24 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         {
             if (modelType == null)
             {
-                throw new ArgumentNullException("modelType");
+                throw new ArgumentNullException(paramName: "modelType");
             }
-            if (String.IsNullOrEmpty(controllerName))
+            if (String.IsNullOrEmpty(value: controllerName))
             {
                 //TODO
-                throw new ArgumentException(Resources.WebFormsViewScaffolder_EmptyActionName, "webFormsName");
+                throw new ArgumentException(message: Resources.WebFormsViewScaffolder_EmptyActionName, paramName: "webFormsName");
             }
 
             PropertyMetadata primaryKey = efMetadata.PrimaryKeys.FirstOrDefault();
             string pluralizedName = efMetadata.EntitySetName;
             string modelNameSpace = modelType.Namespace != null ? modelType.Namespace.FullName : String.Empty;
-            string relativePath = outputPath.Replace(@"\", @"/");
+            string relativePath = outputPath.Replace(oldValue: @"\", newValue: @"/");
 
             //Project project = Context.ActiveProject;
-            var templatePath = Path.Combine("Model", "Metadata");
+            var templatePath = Path.Combine(path1: "Model", path2: "Metadata");
             string defaultNamespace = modelType.Namespace.FullName;
-            string modelTypeVariable = GetTypeVariable(modelType.Name);
-            string bindAttributeIncludeText = GetBindAttributeIncludeText(efMetadata);
+            string modelTypeVariable = GetTypeVariable(typeName: modelType.Name);
+            string bindAttributeIncludeText = GetBindAttributeIncludeText(efMetadata: efMetadata);
 
             Dictionary<string, object> templateParams = new Dictionary<string, object>(){
                 {"Namespace", defaultNamespace}
@@ -394,8 +460,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             , bool overwrite = false)
         {
             //Project project = Context.ActiveProject;
-            string outputPath = Path.Combine(viewsFolderPath, viewPrefix + viewName);
-            string templatePath = Path.Combine("MvcView", viewName);
+            string outputPath = Path.Combine(path1: viewsFolderPath, path2: viewPrefix + viewName);
+            string templatePath = Path.Combine(path1: "MvcView", path2: viewName);
             string viewDataTypeName = modelType.Namespace.FullName + "." + modelType.Name;
 
             if (layoutPageFile == null)
@@ -416,7 +482,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 //, {"ViewDataTypeShortName", modelType.Name} // 可刪除
                 , {"MetaTable", _ModelMetadataVM.DataModel}
                 , {"JQueryVersion","2.1.0"} // 如何讀取專案的 jQuery 版本
-                , {"MvcVersion", new Version("5.1.2.0")}
+                , {"MvcVersion", new Version(version: "5.1.2.0")}
             };
 
             AddFileFromTemplate(project: project
@@ -432,8 +498,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         {
             // add _Layout
             string viewName = "_ViewStart";
-            string outputPath = Path.Combine(viewRootPath, viewName);
-            string templatePath = Path.Combine("MvcFullDependencyCodeGenerator", viewName);
+            string outputPath = Path.Combine(path1: viewRootPath, path2: viewName);
+            string templatePath = Path.Combine(path1: "MvcFullDependencyCodeGenerator", path2: viewName);
             Dictionary<string, object> templateParams = new Dictionary<string, object>(){
                 {"AreaName", areaName}
             };
@@ -445,8 +511,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             // add _ViewStart
             viewName = "_Layout";
-            outputPath = Path.Combine(viewRootPath, "Shared", viewName);
-            templatePath = Path.Combine("MvcFullDependencyCodeGenerator", viewName);
+            outputPath = Path.Combine(path1: viewRootPath, path2: "Shared", path3: viewName);
+            templatePath = Path.Combine(path1: "MvcFullDependencyCodeGenerator", path2: viewName);
             templateParams = new Dictionary<string, object>(){
                 {"IsBundleConfigPresent", true}
                 , {"JQueryVersion",""}
@@ -471,8 +537,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             foreach (var fieldTemplate in fieldTemplates)
             {
-                string outputPath = Path.Combine(viewRootPath, "Shared", fieldTemplate);
-                string templatePath = Path.Combine("DataFieldTemplates", fieldTemplate);
+                string outputPath = Path.Combine(path1: viewRootPath, path2: "Shared", path3: fieldTemplate);
+                string templatePath = Path.Combine(path1: "DataFieldTemplates", path2: fieldTemplate);
 
                 AddFileFromTemplate(project: project
                     , outputPath: outputPath
@@ -515,36 +581,36 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             for (int x = 0; x < project.Properties.Count; x++)
             {
-                object xx = project.Properties.Item(x);
+                object xx = project.Properties.Item(index: x);
             }
 
-            NuGetPackage currPage = Context.Packages.FirstOrDefault(p => p.PackageId == "jquery");
+            NuGetPackage currPage = Context.Packages.FirstOrDefault(predicate: p => p.PackageId == "jquery");
             return (currPage != null ? currPage.Version : string.Empty);
         }
 
         // Called to ensure that the project was compiled successfully
         private Type GetReflectionType(string typeName)
         {
-            return GetService<IReflectedTypesService>().GetType(Context.ActiveProject, typeName);
+            return GetService<IReflectedTypesService>().GetType(project: Context.ActiveProject, fullName: typeName);
         }
 
         private TService GetService<TService>() where TService : class
         {
-            return (TService)ServiceProvider.GetService(typeof(TService));
+            return (TService)ServiceProvider.GetService(serviceType: typeof(TService));
         }
 
         // Returns the relative path of the folder selected in Visual Studio or an empty
         // string if no folder is selected.
         protected string GetSelectionRelativePath()
         {
-            return Context.ActiveProjectItem == null ? String.Empty : ProjectItemUtils.GetProjectRelativePath(Context.ActiveProjectItem);
+            return Context.ActiveProjectItem == null ? String.Empty : ProjectItemUtils.GetProjectRelativePath(projectItem: Context.ActiveProjectItem);
         }
 
         private string GetAreaName(string selectionRelativePath)
         {
-            string[] dirs = selectionRelativePath.Split(new char[1] { '\\' });
+            string[] dirs = selectionRelativePath.Split(separator: new char[1] { '\\' });
 
-            if (dirs[0].Equals("Areas"))
+            if (dirs[0].Equals(value: "Areas"))
                 return dirs[1];
             else
                 return string.Empty;
@@ -566,12 +632,12 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //    ? controllerPath.Replace(keyControllers, keyViews)
             //    : Path.Combine(controllerPath, keyViews)
             //    );
-            return GetRelativeFolderPath(selectionRelativePath, "Views");
+            return GetRelativeFolderPath(selectionRelativePath: selectionRelativePath, folderName: "Views");
         }
 
         private string GetModelFolderPath(string selectionRelativePath)
         {
-            return GetRelativeFolderPath(selectionRelativePath, "Models");
+            return GetRelativeFolderPath(selectionRelativePath: selectionRelativePath, folderName: "Models");
         }
 
         private string GetRelativeFolderPath(string selectionRelativePath, string folderName)
@@ -581,9 +647,9 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             return (
                 (
-                selectionRelativePath.IndexOf(keyControllers) >= 0)
-                ? selectionRelativePath.Replace(keyControllers, keyViews)
-                : Path.Combine(selectionRelativePath, keyViews)
+                selectionRelativePath.IndexOf(value: keyControllers) >= 0)
+                ? selectionRelativePath.Replace(oldValue: keyControllers, newValue: keyViews)
+                : Path.Combine(path1: selectionRelativePath, path2: keyViews)
                 );
         }
 

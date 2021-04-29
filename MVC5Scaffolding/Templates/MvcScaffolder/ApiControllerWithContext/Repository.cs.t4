@@ -22,17 +22,13 @@
 <#
 string routePrefix = "api/" + ControllerRootName;
 #>
-using AutoMapper;
+using System.Linq;
+using DAL.Core;
 using DAL.Core.Dto;
-using System.Web.Http;
+using System.Data.Entity;
 using DAL.Project.Model;
-using DAL.Project.Repository;
-using WebApp.AppCode.Core;
-using WebApp.AppCode.Core.Filter;
-using WebApp.AppCode.Project.Service;
-using WebApp.AppCode.Sys.ViewModel;
 
-namespace <#= Namespace #>
+namespace DAL.Project.Repository
 {
 <#
     var entitySetName = ModelMetadata.EntitySetName;
@@ -68,90 +64,41 @@ namespace <#= Namespace #>
     }
 #>
 
-    //此為範例 , 所以沒有將class 放到個別的位置去
-    //實際專案
-    //Service 放到 WebApp\AppCode\Project\Service
-    //ViewModel 放到 WebApp\AppCode\Project\ViewModel
-    //Profiles 放到 WebApp\AppCode\Project\Profiles
-    //Repos 放到 DAL\DAL\Project\Repository
-    //有需要匯出就實作IExportExcelApiController
-
-       public class <#= ControllerName #> : BaseApiController,
-       ICrudApiController< <#= queryDto #>,<#= editViewMoel #>>
+    public interface <#= iReposName #>:IRepository<<#= entifyName #>>
     {
-        private readonly <#= iserviceName #>  <#= serviceFieldName #> ;
-
-        public  <#= ControllerName #>(<#= iserviceName #> <#= FirstCharLower(entitySetName) #>Service)
-        {
-            <#= serviceFieldName #> = <#= FirstCharLower(entitySetName) #>Service;
-        }
-
-        [HttpPost]
-        [PowerQuery]
-        public IHttpActionResult List(<#= queryDto #> query)
-        {
-           var selectDataModel = <#= serviceFieldName #>.SelectDataModel(query);
-            AppendPower(selectDataModel);
-            return Ok(selectDataModel);
-        }
-
-        [HttpGet]
-        [PowerQuery]
-        public IHttpActionResult GetViewModel(int id)
-        {
-            return Ok(<#= serviceFieldName #>.GetViewModel(id));
-        }
-
-
-        [HttpPost]
-        [PowerCreate]
-        public IHttpActionResult Create(<#= editViewMoel #> model)
-        {
-            return Ok(<#= serviceFieldName #>.CreateFormViewModel(model));
-
-        }
-
-        [HttpPost]
-        [PowerEdit]
-        public IHttpActionResult Update(<#= editViewMoel #>  model)
-        {
-            <#= serviceFieldName #>.EditFormViewModel(model);
-            return Ok();
-        }
-
-        [HttpPost]
-        [PowerDelete]
-        public IHttpActionResult Delete(DeleteDto dto)
-        {
-            <#= serviceFieldName #>.Delete(dto.Id);
-            return Ok();
-        }       
-    }
-    
-    public class <#= viewMoel #> : BaseListViewModel
-    {
-    
+        ListQueryResultDto<<#= entifyName #>> ListQuery(<#= queryDto #> query);
+        <#= entifyName #> FindEdit(int id);
     }
 
-    public class <#= viewMoel #>Profile : Profile
+
+    public class <#= entifyName #>Repos :DbRepository<<#= entifyName #>>, <#= iReposName #>
     {
-        public <#= viewMoel #>Profile()
+        public <#= entifyName #>Repos(IDbContextFactory factory) : base(factory)
         {
-            CreateMap<<#= entifyName #>, <#= viewMoel #>>();
+        }
+
+        public ListQueryResultDto<<#= entifyName #>> ListQuery(<#= queryDto #> query)
+        {
+            var queryable = DbSet.AsQueryable();
+            
+            
+            queryable = queryable.OrderByDescending(p => p.<#= primaryKeyName #>);
+            
+            return QueryPagingResult(query, queryable);
 
         }
-    }
-    public class  <#= editViewMoel #> : BaseEditViewModel
-    {
-         }
-    public class <#= editViewMoel #>Profile : Profile
-    {
-        public <#= editViewMoel #>Profile()
-        {
-            CreateMap<<#= entifyName #>, <#= editViewMoel #>>();
-            CreateMap<<#= editViewMoel #>, <#= entifyName #>>();
 
+        public <#= entifyName #> FindEdit(int id)
+        {
+            return DbSet.Find(id); 
         }
+
+
     }
+
+    public class <#= queryDto #> : PagingSortDto
+    {
+    }
+
 
 }
