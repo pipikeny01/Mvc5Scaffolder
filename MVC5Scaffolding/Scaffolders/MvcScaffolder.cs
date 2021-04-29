@@ -50,6 +50,10 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // are modal is still an open question and tracked by bug 578173.
         public override bool ShowUIAndValidate()
         {
+            ////TODO: 不知道怎麼Move到其他專案
+            //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), "");
+            //_visualStudioUtils.MoveFile(Context.ActiveProject, outputFullPath + ".cs");
+
 
             _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(Context);
 
@@ -148,7 +152,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             Cursor currentCursor = Mouse.OverrideCursor;
             try
             {
-                
+                project = _visualStudioUtils.FindProjectByName("DAL").Object;
                 Mouse.OverrideCursor = Cursors.Wait;
                 GenerateCode(project, selectionRelativePath, this._codeGeneratorViewModel);
             }
@@ -192,10 +196,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , viewPrefix: viewPrefix
                 , overwrite: codeGeneratorViewModel.OverwriteViews);
 
-
-            //TODO: 不知道怎麼Move到其他專案
-            var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), controllerName);
-            _visualStudioUtils.MoveFile(project, outputFullPath+".cs");
 
             if (!codeGeneratorViewModel.GenerateViews)
                 return;

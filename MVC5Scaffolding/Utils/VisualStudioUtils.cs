@@ -29,83 +29,66 @@ namespace Happy.Scaffolding.MVC.Utils
             _dte.Solution.SolutionBuild.BuildProject(solutionConfiguration, project.FullName, true);
         }
 
-        internal Project FindProjectByName(string name)
-        {
-            foreach (Project project in _dte.Solution.Projects)
-            {
-                if (project.Name == name)
-                    return project;
-            }
-
-            MessageBox.Show($"找不到專案:{name}");
-
-            return null;
-        }
-
         public void Build()
         {
             _dte.Solution.SolutionBuild.Build(true);
         }
 
-        public  ProjectItem FindSolutionItemByName(DTE dte, string name, bool recursive)
+        /// <summary>
+        /// https://stackoverflow.com/questions/19427333/how-to-find-a-projectitem-by-the-file-name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public ProjectItem FindProjectByName(string name)
         {
             ProjectItem projectItem = null;
-            foreach (Project project in dte.Solution.Projects)
-            {
-                projectItem = FindProjectItemInProject(project, name, recursive);
 
-                if (projectItem != null)
+            foreach (Project project in _dte.Solution.Projects)
+            {
+                if (project.Name == name)
                 {
-                    break;
+                    projectItem = FindProjectItemInProject(project, name);
+
+                    if (projectItem != null)
+                    {
+                        break;
+                    }
                 }
             }
             return projectItem;
         }
 
-        public static ProjectItem FindProjectItemInProject(Project project, string name, bool recursive)
+        public  ProjectItem FindProjectItemInProject(Project project, string name)
         {
-            ProjectItem projectItem = null;
-
-            if (project.Kind != "")
+            foreach (ProjectItem item in project.ProjectItems)
             {
-                if (project.ProjectItems != null && project.ProjectItems.Count > 0)
-                {
-                    projectItem = DteHelper.FindItemByName(project.ProjectItems, name, recursive);
-                }
-            }
-            else
-            {
-                // if solution folder, one of its ProjectItems might be a real project
-                foreach (ProjectItem item in project.ProjectItems)
-                {
-                    Project realProject = item.Object as Project;
+                Project realProject = item.Object as Project;
 
-                    if (realProject != null)
-                    {
-                        projectItem = FindProjectItemInProject(realProject, name, recursive);
+                if (realProject != null && realProject.Name == name)
+                {
+                    return item;
 
-                        if (projectItem != null)
-                        {
-                            break;
-                        }
-                    }
                 }
             }
 
-            return projectItem;
+            return null;
         }
 
         public void MoveFile(Project project, string outputFolderPath)
         {
-            var dalProject = FindProjectByName("DAL");
+            //var findSolutionItemByName = FindSolutionItemByName(_dte, "DAL",true);
 
-            foreach (ProjectItem dalProjectProjectItem in dalProject.ProjectItems)
-            {
-                Trace.WriteLine(dalProjectProjectItem.Name);
-            }
+            //var dalProject = FindProjectByName("DAL");
 
-            dalProject.ProjectItems.AddFromTemplate(
-                "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Class1.cs","ccc");
+            //foreach (ProjectItem dalProjectProjectItem in dalProject.ProjectItems)
+            //{
+            //    Trace.WriteLine(dalProjectProjectItem.Name);
+            //}
+
+            //dalProject.ProjectItems.AddFromTemplate(
+            //    "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Class1.cs","ccc");
         }
+
+        
     }
 }
