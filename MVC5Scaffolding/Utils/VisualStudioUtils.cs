@@ -3,6 +3,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.VCProjectEngine;
 
@@ -46,11 +47,65 @@ namespace Happy.Scaffolding.MVC.Utils
             _dte.Solution.SolutionBuild.Build(true);
         }
 
+        public  ProjectItem FindSolutionItemByName(DTE dte, string name, bool recursive)
+        {
+            ProjectItem projectItem = null;
+            foreach (Project project in dte.Solution.Projects)
+            {
+                projectItem = FindProjectItemInProject(project, name, recursive);
+
+                if (projectItem != null)
+                {
+                    break;
+                }
+            }
+            return projectItem;
+        }
+
+        public static ProjectItem FindProjectItemInProject(Project project, string name, bool recursive)
+        {
+            ProjectItem projectItem = null;
+
+            if (project.Kind != "")
+            {
+                if (project.ProjectItems != null && project.ProjectItems.Count > 0)
+                {
+                    projectItem = DteHelper.FindItemByName(project.ProjectItems, name, recursive);
+                }
+            }
+            else
+            {
+                // if solution folder, one of its ProjectItems might be a real project
+                foreach (ProjectItem item in project.ProjectItems)
+                {
+                    Project realProject = item.Object as Project;
+
+                    if (realProject != null)
+                    {
+                        projectItem = FindProjectItemInProject(realProject, name, recursive);
+
+                        if (projectItem != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return projectItem;
+        }
+
         public void MoveFile(Project project, string outputFolderPath)
         {
-            var findProjectByName = FindProjectByName("DAL");
-            findProjectByName.ProjectItems.AddFromFile(
-                "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Controllers\\Line\\LineApiController.cs");
+            var dalProject = FindProjectByName("DAL");
+
+            foreach (ProjectItem dalProjectProjectItem in dalProject.ProjectItems)
+            {
+                Trace.WriteLine(dalProjectProjectItem.Name);
+            }
+
+            dalProject.ProjectItems.AddFromTemplate(
+                "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Class1.cs","ccc");
         }
     }
 }

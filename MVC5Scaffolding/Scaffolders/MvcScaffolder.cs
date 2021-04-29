@@ -194,8 +194,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
 
             //TODO: 不知道怎麼Move到其他專案
-            //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath() , controllerName);
-            //_visualStudioUtils.MoveFile(project, outputFullPath);
+            var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), controllerName);
+            _visualStudioUtils.MoveFile(project, outputFullPath+".cs");
 
             if (!codeGeneratorViewModel.GenerateViews)
                 return;
