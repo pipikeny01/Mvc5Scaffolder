@@ -108,6 +108,9 @@
     <Compile Include="Scaffolders\MvcScaffolder.cs" />
     <Compile Include="Scaffolders\MvcScaffolderFactory.cs" />
     <None Include="packages.config" />
+    <None Include="Templates\MvcScaffolder\ApiControllerWithContext\EditViewModel.cs.t4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\MvcScaffolder\ApiControllerWithContext\ListViewModel.cs.t4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -225,6 +225,15 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , efMetadata: efMetadata
                 , overwrite: codeGeneratorViewModel.OverwriteViews);
 
+            AddEditViewModel(project: Context.ActiveProject
+                , controllerName: controllerName
+                , controllerRootName: controllerRootName
+                , outputPath: PathHelper.ListViewModelOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                , ContextTypeName: dbContext.Name
+                , modelType: modelType
+                , efMetadata: efMetadata
+                , overwrite: codeGeneratorViewModel.OverwriteViews);
+
             if (!codeGeneratorViewModel.GenerateViews)
                 return;
             ////_ViewStart & Create _Layout
@@ -384,14 +393,44 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             ModelMetadata efMetadata,
             bool overwrite = false)
         {
+            AddViewModelHendler(project: project,
+                controllerName: controllerName,
+                outputPath: outputPath,
+                modelType: modelType,
+                efMetadata: efMetadata,
+                overwrite: overwrite, t4Name: "ListViewModel");
+        }
+
+        private void AddEditViewModel(Project project,
+            string controllerName,
+            string controllerRootName,
+            string outputPath,
+            string ContextTypeName /*"Entities"*/,
+            CodeType modelType,
+            ModelMetadata efMetadata,
+            bool overwrite = false)
+        {
+            AddViewModelHendler(project: project,
+                controllerName: controllerName,
+                outputPath: outputPath,
+                modelType: modelType,
+                efMetadata: efMetadata,
+                overwrite: overwrite, t4Name: "EditViewModel");
+        }
+
+        private void AddViewModelHendler(Project project, string controllerName, string outputPath, CodeType modelType,
+            ModelMetadata efMetadata, bool overwrite, string t4Name)
+        {
             if (modelType == null)
             {
                 throw new ArgumentNullException(paramName: "modelType");
             }
+
             if (String.IsNullOrEmpty(value: controllerName))
             {
                 //TODO
-                throw new ArgumentException(message: Resources.WebFormsViewScaffolder_EmptyActionName, paramName: "webFormsName");
+                throw new ArgumentException(message: Resources.WebFormsViewScaffolder_EmptyActionName,
+                    paramName: "webFormsName");
             }
 
             PropertyMetadata primaryKey = efMetadata.PrimaryKeys.FirstOrDefault();
@@ -400,16 +439,15 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             string relativePath = outputPath.Replace(oldValue: @"\", newValue: @"/");
 
             //Project project = Context.ActiveProject;
-            var templatePath = Path.Combine(path1: "ApiControllerWithContext", path2: "ListViewModel");
+            var templatePath = Path.Combine(path1: "ApiControllerWithContext", path2: t4Name);
             string defaultNamespace = modelType.Namespace.FullName;
             string modelTypeVariable = GetTypeVariable(typeName: modelType.Name);
             string bindAttributeIncludeText = GetBindAttributeIncludeText(efMetadata: efMetadata);
 
-            Dictionary<string, object> templateParams = new Dictionary<string, object>(){
-                {"Namespace", defaultNamespace}
-                , {"ModelTypeName", modelType.Name}
-                , {"ModelMetadata", efMetadata}
-                , {"MetaTable", _ModelMetadataVM.DataModel}
+            Dictionary<string, object> templateParams = new Dictionary<string, object>()
+            {
+                {"Namespace", defaultNamespace}, {"ModelTypeName", modelType.Name}, {"ModelMetadata", efMetadata},
+                {"MetaTable", _ModelMetadataVM.DataModel}
             };
 
             AddFileFromTemplate(project: project
