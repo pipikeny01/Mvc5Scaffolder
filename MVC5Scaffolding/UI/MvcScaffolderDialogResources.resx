@@ -151,7 +151,7 @@
     <value>Please enter the ID of the placeholder control to place the generated content in</value>
   </data>
   <data name="GenerateViews" xml:space="preserve">
-    <value>Generate views</value>
+    <value>產生ViewModel</value>
   </data>
   <data name="LeaveEmpty" xml:space="preserve">
     <value>(Leave empty if it is set in Razor _viewstart file)</value>
@@ -166,7 +166,7 @@
     <value>Next</value>
   </data>
   <data name="OverwriteCheckBox_Content" xml:space="preserve">
-    <value>Over write existing pages</value>
+    <value>覆蓋已存在的檔案</value>
   </data>
   <data name="ProgramerNameLabel_Content" xml:space="preserve">
     <value>Program title</value>

@@ -36,6 +36,9 @@ namespace Happy.Scaffolding.MVC.UI
             _context = context;
             //_useMasterPage = true;
             _GenerateViews = true;
+            _GenerateApiController = true;
+            _GenerateRepository = true;
+            _GenerateService = true;
             _ReferenceScriptLibraries = true;
             _LayoutPageSelected = true;
         }
@@ -241,6 +244,58 @@ namespace Happy.Scaffolding.MVC.UI
         //}
 
         #region MVC 
+        private bool _GenerateApiController;
+        public bool GenerateApiController
+        {
+            get { return _GenerateApiController; }
+            set
+            {
+                Validate();
+
+                if (value == _GenerateApiController)
+                {
+                    return;
+                }
+
+                _GenerateApiController = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _GenerateService;
+        public bool GenerateService
+        {
+            get { return _GenerateService; }
+            set
+            {
+                Validate();
+
+                if (value == _GenerateApiController)
+                {
+                    return;
+                }
+
+                _GenerateService = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _GenerateRepository;
+        public bool GenerateRepository
+        {
+            get { return _GenerateRepository; }
+            set
+            {
+                Validate();
+
+                if (value == _GenerateApiController)
+                {
+                    return;
+                }
+
+                _GenerateRepository = value;
+                OnPropertyChanged();
+            }
+        }
         private bool _GenerateViews;
         public bool GenerateViews
         {

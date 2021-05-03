@@ -18,18 +18,18 @@ using AutoMapper;
 using WebApp.AppCode.Sys.ViewModel;
 
 
-namespace  DAL.Project.Model
+namespace  WebApp.AppCode.Project.ViewModel
 {
    
-    public partial class <#= ModelTypeName #>ListViewModel :BaseEditViewModel
+    public partial class <#= ModelTypeName #>EditViewModel :BaseEditViewModel
     {
 <#
 foreach (PropertyMetadata property in ModelMetadata.Properties) {
         MetaColumnInfo column = MetaTable[property.PropertyName];
-        if(!column.IsListVisible) continue;
+        if(!column.IsEditVisible) continue;
         if(property.IsPrimaryKey || !MetaTable[property.PropertyName].Nullable){
 #>
-        [Required(ErrorMessage = "Please enter : <#= column.DisplayName #>")]
+        [Required(ErrorMessage = ErrorMessage.Required)]
 <#    }
 #>
         [Display(Name = "<#= column.DisplayName #>")]
@@ -40,12 +40,12 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 #>
     }
 
-    public class <#= ModelTypeName #>Profile : Profile
+    public class <#= ModelTypeName #>EditViewModelProfile : Profile
     {
-        public <#= ModelTypeName #>Profile()
+        public <#= ModelTypeName #>EditViewModelProfile()
         {
-            CreateMap<<#= ModelTypeName #>, <#= ModelTypeName #>ListViewModel>();
-
+            CreateMap<<#= ModelTypeName #>, <#= ModelTypeName #>EditViewModel>();
+            CreateMap<<#= ModelTypeName #>EditViewModel, <#= ModelTypeName #>>();
         }
     }
 }

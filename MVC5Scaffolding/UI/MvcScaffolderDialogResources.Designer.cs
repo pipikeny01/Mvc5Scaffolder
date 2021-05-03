@@ -160,7 +160,7 @@ namespace Happy.Scaffolding.MVC.UI {
         }
         
         /// <summary>
-        ///   查詢類似 Generate views 的當地語系化字串。
+        ///   查詢類似 產生ViewModel 的當地語系化字串。
         /// </summary>
         public static string GenerateViews {
             get {
@@ -205,7 +205,7 @@ namespace Happy.Scaffolding.MVC.UI {
         }
         
         /// <summary>
-        ///   查詢類似 Over write existing pages 的當地語系化字串。
+        ///   查詢類似 覆蓋已存在的檔案 的當地語系化字串。
         /// </summary>
         public static string OverwriteCheckBox_Content {
             get {

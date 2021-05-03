@@ -68,7 +68,7 @@
                       SelectedItem="{Binding ModelType, UpdateSourceTrigger=LostFocus}"
                       Text="{Binding ModelTypeName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
             </ComboBox>
-            
+
             <Label Content="{x:Static self:MvcScaffolderDialogResources.DataContextTypeLabel_Content}" 
                    Target="{Binding ElementName=dataContextComboBox}" />
             <ComboBox HorizontalAlignment="Stretch" 
@@ -81,14 +81,25 @@
                       TextSearch.TextPath="DisplayName"
                       Text="{Binding DbContextModelTypeName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
             </ComboBox>
+            <CheckBox Content="{x:Static self:MvcScaffolderDialogResources.OverwriteCheckBox_Content}" 
+                      IsChecked="{Binding OverwriteViews}"  RenderTransformOrigin="1.733,0.787"  />
+            <CheckBox Content="產生ApiController" 
+                      IsChecked="{Binding GenerateApiController}" RenderTransformOrigin="1.733,0.787" />
+            <CheckBox Content="產生Service" 
+                      IsChecked="{Binding GenerateService}" RenderTransformOrigin="1.733,0.787" />
+            
+            <CheckBox Content="產生Repository" 
+                      IsChecked="{Binding GenerateRepository}" RenderTransformOrigin="1.733,0.787" />
 
             <CheckBox Content="{x:Static self:MvcScaffolderDialogResources.GenerateViews}" 
                       IsChecked="{Binding GenerateViews}" RenderTransformOrigin="1.733,0.787" />
 
-            <StackPanel Style="{StaticResource Section}" IsEnabled="{Binding GenerateViews}">
-                <CheckBox Content="{x:Static self:MvcScaffolderDialogResources.OverwriteCheckBox_Content}" 
-                      IsChecked="{Binding OverwriteViews}"  />
-                
+      
+
+            <StackPanel Style="{StaticResource Section}" Height="17" Margin="20,0,-0.4,10" Visibility="Hidden" >
+
+
+
                 <CheckBox Content="{x:Static self:MvcScaffolderDialogResources.ReferenceScriptLibraries}" 
                       IsChecked="{Binding ReferenceScriptLibraries}" />
                 <CheckBox Content="{x:Static self:MvcScaffolderDialogResources.UseLayoutPage}" 
@@ -109,6 +120,7 @@
             <Label Content="{x:Static self:MvcScaffolderDialogResources.ViewPrefixLabel_Content}" 
                    Target="{Binding ElementName=controllerName}" Margin="26,0,0,0"/>
             <TextBox  Text="{Binding ViewPrefix}" Margin="103,-20,-0.4,10" />
+          
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                     Margin="0,11,0,0">

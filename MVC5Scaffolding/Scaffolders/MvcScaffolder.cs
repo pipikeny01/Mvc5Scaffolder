@@ -163,7 +163,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // Collects the common data needed by all of the scaffolded output and generates:
         // 1) Add Controller
         // 2) Add View
-        private void GenerateCode(Project project, string selectionRelativePath, MvcCodeGeneratorViewModel codeGeneratorViewModel)
+        private void GenerateCode(Project project, string selectionRelativePath,
+            MvcCodeGeneratorViewModel codeGeneratorViewModel)
         {
             // Get Model Type
             var modelType = codeGeneratorViewModel.ModelType.CodeType;
@@ -175,7 +176,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             // Get the Entity Framework Meta Data
             IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-            ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+            ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context,
+                contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
 
             // Create Controller
             string controllerName = codeGeneratorViewModel.ControllerName;
@@ -184,58 +186,69 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             string viewPrefix = codeGeneratorViewModel.ViewPrefix;
             string programTitle = codeGeneratorViewModel.ProgramTitle;
 
-            AddMvcController(project: project
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: outputFolderPath
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , viewPrefix: viewPrefix
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
 
-            AddService(project: project
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: PathHelper.ServiceOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , viewPrefix: viewPrefix
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+            if (codeGeneratorViewModel.GenerateApiController)
+            {
+                AddMvcController(project: project
+                    , controllerName: controllerName
+                    , controllerRootName: controllerRootName
+                    , outputPath: outputFolderPath
+                    , ContextTypeName: dbContext.Name
+                    , modelType: modelType
+                    , efMetadata: efMetadata
+                    , viewPrefix: viewPrefix
+                    , overwrite: codeGeneratorViewModel.OverwriteViews);
+            }
 
-            project = _visualStudioUtils.FindProjectByName("DAL").Object;
-            AddRepository(project: project
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: PathHelper.RepositoryOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , viewPrefix: viewPrefix
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+            if (codeGeneratorViewModel.GenerateService)
+            {
+                AddService(project: project
+                    , controllerName: controllerName
+                    , controllerRootName: controllerRootName
+                    , outputPath: PathHelper.ServiceOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                    , ContextTypeName: dbContext.Name
+                    , modelType: modelType
+                    , efMetadata: efMetadata
+                    , viewPrefix: viewPrefix
+                    , overwrite: codeGeneratorViewModel.OverwriteViews);
+            }
+
+            if (codeGeneratorViewModel.GenerateRepository)
+            {
+                project = _visualStudioUtils.FindProjectByName("DAL").Object;
+                AddRepository(project: project
+                    , controllerName: controllerName
+                    , controllerRootName: controllerRootName
+                    , outputPath: PathHelper.RepositoryOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                    , ContextTypeName: dbContext.Name
+                    , modelType: modelType
+                    , efMetadata: efMetadata
+                    , viewPrefix: viewPrefix
+                    , overwrite: codeGeneratorViewModel.OverwriteViews);
+            }
 
             // add Metadata for Model
-            AddListViewModel(project: Context.ActiveProject
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: PathHelper.ListViewModelOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+            if (codeGeneratorViewModel.GenerateViews)
+            {
+                AddListViewModel(project: Context.ActiveProject
+                    , controllerName: controllerName
+                    , controllerRootName: controllerRootName
+                    , outputPath: PathHelper.ListViewModelOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                    , ContextTypeName: dbContext.Name
+                    , modelType: modelType
+                    , efMetadata: efMetadata
+                    , overwrite: codeGeneratorViewModel.OverwriteViews);
 
-            AddEditViewModel(project: Context.ActiveProject
-                , controllerName: controllerName
-                , controllerRootName: controllerRootName
-                , outputPath: PathHelper.ListViewModelOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
-                , ContextTypeName: dbContext.Name
-                , modelType: modelType
-                , efMetadata: efMetadata
-                , overwrite: codeGeneratorViewModel.OverwriteViews);
+                AddEditViewModel(project: Context.ActiveProject
+                    , controllerName: controllerName
+                    , controllerRootName: controllerRootName
+                    , outputPath: PathHelper.EditViewModelOutPath(codeGeneratorViewModel: codeGeneratorViewModel)
+                    , ContextTypeName: dbContext.Name
+                    , modelType: modelType
+                    , efMetadata: efMetadata
+                    , overwrite: codeGeneratorViewModel.OverwriteViews);
+            }
 
-            if (!codeGeneratorViewModel.GenerateViews)
-                return;
             ////_ViewStart & Create _Layout
             //string viewRootPath = GetViewsFolderPath(selectionRelativePath);
             //if (codeGeneratorViewModel.LayoutPageSelected)
@@ -295,7 +308,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 overwrite: overwrite, t4Name: "Controller");
         }
 
-
         private void AddService(Project project,
             string controllerName,
             string controllerRootName,
@@ -317,6 +329,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 viewPrefix: viewPrefix,
                 overwrite: overwrite, t4Name: "Service");
         }
+
         private void AddRepository(Project project,
             string controllerName,
             string controllerRootName,
@@ -338,6 +351,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 viewPrefix: viewPrefix,
                 overwrite: overwrite, t4Name: "Repository");
         }
+
         private void AddControllerHandler(Project project, string controllerName, string controllerRootName, string outputPath,
             string ContextTypeName, CodeType modelType, ModelMetadata efMetadata, string viewPrefix, bool overwrite, string t4Name)
         {
@@ -456,7 +470,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , templateParameters: templateParams
                 , skipIfExists: !overwrite);
         }
-
 
         private string GetTypeVariable(string typeName)
         {
