@@ -89,6 +89,11 @@ namespace Happy.Scaffolding.MVC.Utils
             //    "D:\\Users\\pigi0\\Source\\Repos\\SPATemplate\\Solustion\\Web\\Class1.cs","ccc");
         }
 
+        public void Open(string fullPath)
+        {
+            _dte.ItemOperations.OpenFile(fullPath, Constants.vsViewKindTextView);
+
+        }
         
     }
 }

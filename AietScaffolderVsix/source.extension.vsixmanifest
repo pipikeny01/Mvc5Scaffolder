@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="AietScaffolderVsix.eaf7f140-f494-476c-81be-03701276dcf1" Version="1.0" Language="en-US" Publisher="kenny" />
         <DisplayName>AietScaffolderVsix</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description xml:space="preserve">產生 ApiController Service Repository ViewModel 程式碼範本產生</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />

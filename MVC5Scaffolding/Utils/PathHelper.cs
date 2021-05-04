@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using EnvDTE;
 using Happy.Scaffolding.MVC.UI;
+using Microsoft.AspNet.Scaffolding;
 
 namespace Happy.Scaffolding.MVC.Utils
 {
@@ -38,5 +41,11 @@ namespace Happy.Scaffolding.MVC.Utils
                 "ViewModel",
                 codeGeneratorViewModel.ModelType.ShortName + "EditViewModel");
         }
+
+        public static string GetProjectItemFullPath(Project project, string outputPath, string extension)
+        {
+            return Path.Combine(project.GetFullPath(), outputPath) + extension;
+        }
+
     }
 }

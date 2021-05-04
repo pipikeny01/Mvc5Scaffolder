@@ -2,10 +2,9 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
-namespace AietScaffolderVsix
+namespace VSIXProject2
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -25,13 +24,13 @@ namespace AietScaffolderVsix
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(AietScaffolderVsixPackage.PackageGuidString)]
-    public sealed class AietScaffolderVsixPackage : AsyncPackage
+    [Guid(VSIXProject2Package.PackageGuidString)]
+    public sealed class VSIXProject2Package : AsyncPackage
     {
         /// <summary>
-        /// AietScaffolderVsixPackage GUID string.
+        /// VSIXProject2Package GUID string.
         /// </summary>
-        public const string PackageGuidString = "12163a05-a7a8-4f63-9974-0d2fe2a198f0";
+        public const string PackageGuidString = "024ef0f3-5cdf-4833-8514-c84bfefc1810";
 
         #region Package Members
 
@@ -44,7 +43,6 @@ namespace AietScaffolderVsix
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            MessageBox.Show(Environment.CurrentDirectory);
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

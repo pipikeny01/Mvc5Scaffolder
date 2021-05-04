@@ -16,8 +16,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using WebApp.AppCode.Sys.ViewModel;
-
-
+using DAL.Sys.Model;
+using DAL.Project.Model;
 namespace  WebApp.AppCode.Project.ViewModel
 {
    

@@ -25,8 +25,8 @@ namespace Happy.Scaffolding.MVC
 
     // This is where everything with the scaffolder is kicked off. The factory
     // returns a MvcScaffolderFactory when a project meets the requirements.
-    [Export(typeof(CodeGeneratorFactory))]
-    public class MvcScaffolderFactory : CodeGeneratorFactory
+    [Export(typeof(LegacyCodeGeneratorFactory))]
+    public class MvcScaffolderFactory : LegacyCodeGeneratorFactory
     {
         public MvcScaffolderFactory()
             : base(CreateCodeGeneratorInformation())
@@ -86,7 +86,7 @@ namespace Happy.Scaffolding.MVC
 
 
     [Export(typeof(CodeGeneratorFactory))]
-    public class MvcScaffolderFactory2 : CodeGeneratorFactory
+    public class MvcScaffolderFactory2 : LegacyCodeGeneratorFactory
     {
         public MvcScaffolderFactory2()
             : base(CreateCodeGeneratorInformation())

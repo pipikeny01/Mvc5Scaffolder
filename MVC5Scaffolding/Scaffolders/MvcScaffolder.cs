@@ -10,7 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
+using Cursor = System.Windows.Input.Cursor;
+using Cursors = System.Windows.Input.Cursors;
 
 namespace Happy.Scaffolding.MVC.Scaffolders
 {
@@ -53,7 +56,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             ////TODO: 不知道怎麼Move到其他專案
             //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), "");
             //_visualStudioUtils.MoveFile(Context.ActiveProject, outputFullPath + ".cs");
-
             _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(context: Context);
 
             MvcScaffolderDialog window = new MvcScaffolderDialog(viewModel: _codeGeneratorViewModel);
@@ -61,6 +63,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             if (isOk == true)
             {
+                Alert.Trace("Validate");
                 Validate();
 
                 if (_codeGeneratorViewModel.GenerateViews)
@@ -68,6 +71,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                     isOk = ShowColumnSetting();
                 }
             }
+
+            Alert.Trace("ShowUIAndValidate" + isOk);
             return (isOk == true);
         }
 
@@ -139,6 +144,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // Shows a busy wait mouse cursor while working.
         public override void GenerateCode()
         {
+            Alert.Trace("GenerateCode");
             var project = Context.ActiveProject;
             var selectionRelativePath = GetSelectionRelativePath();
             var modelFolderPath = GetModelFolderPath(selectionRelativePath: selectionRelativePath);
@@ -186,6 +192,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             string viewPrefix = codeGeneratorViewModel.ViewPrefix;
             string programTitle = codeGeneratorViewModel.ProgramTitle;
 
+            Alert.Trace("AddMvcController");
 
             if (codeGeneratorViewModel.GenerateApiController)
             {
@@ -215,7 +222,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             if (codeGeneratorViewModel.GenerateRepository)
             {
-                project = _visualStudioUtils.FindProjectByName("DAL").Object;
+                project = (Project) _visualStudioUtils.FindProjectByName("DAL").Object;
                 AddRepository(project: project
                     , controllerName: controllerName
                     , controllerRootName: controllerRootName
@@ -355,6 +362,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         private void AddControllerHandler(Project project, string controllerName, string controllerRootName, string outputPath,
             string ContextTypeName, CodeType modelType, ModelMetadata efMetadata, string viewPrefix, bool overwrite, string t4Name)
         {
+            Alert.Trace(t4Name);
+
             if (modelType == null)
             {
                 throw new ArgumentNullException(paramName: "modelType");
@@ -396,6 +405,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , templateName: templatePath
                 , templateParameters: templateParams
                 , skipIfExists: !overwrite);
+
+            //_visualStudioUtils.Open(PathHelper.GetProjectItemFullPath(project, outputPath, ".cs"));
         }
 
         private void AddListViewModel(Project project,
