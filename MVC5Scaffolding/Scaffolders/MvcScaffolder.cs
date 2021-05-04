@@ -144,7 +144,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // Shows a busy wait mouse cursor while working.
         public override void GenerateCode()
         {
-            Alert.Trace("GenerateCode");
             var project = Context.ActiveProject;
             var selectionRelativePath = GetSelectionRelativePath();
             var modelFolderPath = GetModelFolderPath(selectionRelativePath: selectionRelativePath);
@@ -182,8 +181,11 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             // Get the Entity Framework Meta Data
             IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-            ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context,
-                contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+            //ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context,
+            //    contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+
+
+            var efMetadata = GetEfMetadata();
 
             // Create Controller
             string controllerName = codeGeneratorViewModel.ControllerName;
@@ -222,7 +224,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             if (codeGeneratorViewModel.GenerateRepository)
             {
-                project = (Project) _visualStudioUtils.FindProjectByName("DAL").Object;
+                project = (Project)_visualStudioUtils.FindProjectByName("DAL").Object;
                 AddRepository(project: project
                     , controllerName: controllerName
                     , controllerRootName: controllerRootName
@@ -290,6 +292,15 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //        , overwrite: codeGeneratorViewModel.OverwriteViews
             //        );
             //}
+        }
+
+        private ModelMetadata GetEfMetadata()
+        {
+            var dalProject = (Project) _visualStudioUtils.FindProjectByName("DAL").Object;
+            var dal_dllPath = Path.Combine(dalProject.GetFullPath(), "bin", "Debug", "DAL.dll");
+            var metadataHelper = new MetadataHelper(dal_dllPath);
+            ModelMetadata efMetadata = metadataHelper.ToMetadata("TestScaffold");
+            return efMetadata;
         }
 
         //add MVC Controller

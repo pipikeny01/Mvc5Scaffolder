@@ -30,7 +30,9 @@ using DAL.Project.Repository;
 using WebApp.AppCode.Core;
 using WebApp.AppCode.Core.Filter;
 using WebApp.AppCode.Project.Service;
+using WebApp.AppCode.Project.ViewModel;
 using WebApp.AppCode.Sys.ViewModel;
+
 
 namespace <#= Namespace #>
 {
@@ -121,30 +123,6 @@ namespace <#= Namespace #>
         }       
     }
     
-    public class <#= viewMoel #> : BaseListViewModel
-    {
-    
-    }
-
-    public class <#= viewMoel #>Profile : Profile
-    {
-        public <#= viewMoel #>Profile()
-        {
-            CreateMap<<#= entifyName #>, <#= viewMoel #>>();
-
-        }
-    }
-    public class  <#= editViewMoel #> : BaseEditViewModel
-    {
-         }
-    public class <#= editViewMoel #>Profile : Profile
-    {
-        public <#= editViewMoel #>Profile()
-        {
-            CreateMap<<#= entifyName #>, <#= editViewMoel #>>();
-            CreateMap<<#= editViewMoel #>, <#= entifyName #>>();
-
-        }
-    }
+  
 
 }

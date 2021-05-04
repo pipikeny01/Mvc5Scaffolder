@@ -14,6 +14,7 @@
 <#@ parameter type="Happy.Scaffolding.MVC.Models.MetaTableInfo" name="MetaTable" #>
 using System;
 using System.ComponentModel.DataAnnotations;
+using DAL.Core;
 using AutoMapper;
 using WebApp.AppCode.Sys.ViewModel;
 using DAL.Sys.Model;

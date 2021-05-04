@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebAppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AietScaffolderVsix", "AietScaffolderVsix\AietScaffolderVsix.csproj", "{4F460162-E195-4915-A632-94B318C3D921}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aiet_Helper", "..\SPATemplate\Solustion\Aiet_Helper\Aiet_Helper.csproj", "{F615E6FD-E465-49E4-8E13-EC9240A48FB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4F460162-E195-4915-A632-94B318C3D921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F460162-E195-4915-A632-94B318C3D921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F460162-E195-4915-A632-94B318C3D921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F615E6FD-E465-49E4-8E13-EC9240A48FB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F615E6FD-E465-49E4-8E13-EC9240A48FB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F615E6FD-E465-49E4-8E13-EC9240A48FB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F615E6FD-E465-49E4-8E13-EC9240A48FB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

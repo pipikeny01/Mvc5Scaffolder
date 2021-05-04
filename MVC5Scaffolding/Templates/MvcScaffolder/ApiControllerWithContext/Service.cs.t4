@@ -27,6 +27,7 @@ using DAL.Core;
 using DAL.Project.Model;
 using DAL.Project.Repository;
 using WebApp.AppCode.Core;
+using WebApp.AppCode.Project.ViewModel;
 using WebApp.AppCode.Sys.Service.Base;
 using WebApp.AppCode.Sys.Service.Dto;
 using WebApp.Controllers.Project;
