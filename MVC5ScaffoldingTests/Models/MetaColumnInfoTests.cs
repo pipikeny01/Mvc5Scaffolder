@@ -43,14 +43,17 @@ namespace Happy.Scaffolding.MVC.Models.Tests
         public void TestDomainLoadAssembly()
         
         {
-            AppDomain ad = AppDomain.CreateDomain("Test");
-            Loader loader = (Loader)ad.CreateInstanceFromAndUnwrap(
-                typeof(Loader).Assembly.EscapedCodeBase,
-                typeof(Loader).FullName);
-
             var file = @"D:\Users\pigi0\Source\Repos\SPATemplate\Solustion\DAL\bin\Debug\DAL.dll";
-            var assembly = loader.LoadAssembly(file);
-            AppDomain.Unload(ad);
+            //AppDomain ad = AppDomain.CreateDomain("Test");
+            //Loader loader = (Loader)ad.CreateInstanceFromAndUnwrap(
+            //    typeof(Loader).Assembly.Location,
+            //    typeof(Loader).FullName);
+            //Loader loader = (Loader)ad.CreateInstanceFromAndUnwrap(
+            //    typeof(Loader).Assembly.Location,
+            //    typeof(Loader).FullName);
+            //var assembly = loader.LoadAssembly(file);
+
+           var assembly =  Assembly.Load(File.ReadAllBytes(file));
 
             var types = assembly.GetTypes();
 

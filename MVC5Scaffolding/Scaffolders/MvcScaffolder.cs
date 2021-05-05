@@ -256,6 +256,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                     , overwrite: codeGeneratorViewModel.OverwriteViews);
             }
 
+
+
             ////_ViewStart & Create _Layout
             //string viewRootPath = GetViewsFolderPath(selectionRelativePath);
             //if (codeGeneratorViewModel.LayoutPageSelected)

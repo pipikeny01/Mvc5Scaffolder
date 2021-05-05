@@ -69,7 +69,8 @@ namespace WebApp.AppCode.Project.Service
 #>
 
      
-    public interface <#= iserviceName #> : ICrudService<<#= queryDto #>, <#= viewMoel #>, <#= editViewMoel #>>
+    public interface <#= iserviceName #> : 
+        ICrudService<<#= queryDto #>, <#= viewMoel #>, <#= editViewMoel #>>
     {
     }
     

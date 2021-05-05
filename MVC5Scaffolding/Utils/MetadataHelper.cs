@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Microsoft.AspNet.Scaffolding.Core.Metadata;
+using PropertyMetadata = Microsoft.AspNet.Scaffolding.Core.Metadata.PropertyMetadata;
 
 namespace Happy.Scaffolding.MVC.Utils
 {
@@ -56,19 +58,28 @@ namespace Happy.Scaffolding.MVC.Utils
         /// <summary>
         /// Create Domain Load Assembly ,因為Assembly.Load不會Dispose
         /// </summary>
+        ///<remarks>https://social.msdn.microsoft.com/Forums/en-US/a6a896ca-8905-41fb-8f52-7f39e89c9a91/problem-loading-and-unloading-dynamically-an-assembly-dll-in-c?forum=csharplanguage</remarks>
         /// <returns></returns>
         private Assembly LoadAssemblyByNewDomain()
         {
-            AppDomain ad = AppDomain.CreateDomain("load" + Guid.NewGuid());
-            Loader loader = (Loader) ad.CreateInstanceFromAndUnwrap(
-                typeof(Loader).Assembly.EscapedCodeBase,
-                typeof(Loader).FullName);
+            return Assembly.Load(File.ReadAllBytes(_assemblyPath));
 
-            var assembly = loader.LoadAssembly(_assemblyPath);
+            //AppDomain ad = AppDomain.CreateDomain("load" + Guid.NewGuid());
 
-            AppDomain.Unload(ad);
+            //MessageBox.Show(typeof(Loader).Assembly.Location);
+            //MessageBox.Show(typeof(Loader).FullName);
 
-            return assembly;
+            //Loader loader = (Loader)ad.CreateInstanceFromAndUnwrap(
+            //    typeof(Loader).Assembly.Location,
+            //    typeof(Loader).FullName);
+
+
+
+            //var assembly = loader.LoadAssembly(_assemblyPath);
+
+            //AppDomain.Unload(ad);
+
+            //return assembly;
         }
 
         private static PropertyMetadata CreateKeyMata(PropertyInfo key)
@@ -137,7 +148,7 @@ namespace Happy.Scaffolding.MVC.Utils
 
         public Assembly LoadAssembly(string path)
         {
-            return Assembly.Load(AssemblyName.GetAssemblyName(path));
+            return Assembly.LoadFrom(path);
         }
 
         public object ExecuteStaticMethod(string typeName, string methodName, params object[] parameters)
