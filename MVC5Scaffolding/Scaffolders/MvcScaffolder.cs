@@ -53,9 +53,6 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         // are modal is still an open question and tracked by bug 578173.
         public override bool ShowUIAndValidate()
         {
-            ////TODO: 不知道怎麼Move到其他專案
-            //var outputFullPath = Path.Combine(Context.ActiveProjectItem.GetFullPath(), "");
-            //_visualStudioUtils.MoveFile(Context.ActiveProject, outputFullPath + ".cs");
             _codeGeneratorViewModel = new MvcCodeGeneratorViewModel(context: Context);
 
             MvcScaffolderDialog window = new MvcScaffolderDialog(viewModel: _codeGeneratorViewModel);
@@ -63,7 +60,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
 
             if (isOk == true)
             {
-                Alert.Trace("Validate");
+                //Alert.Trace("Validate");
                 Validate();
 
                 if (_codeGeneratorViewModel.GenerateViews)
@@ -72,7 +69,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 }
             }
 
-            Alert.Trace("ShowUIAndValidate" + isOk);
+            //Alert.Trace("ShowUIAndValidate" + isOk);
             return (isOk == true);
         }
 
@@ -89,11 +86,12 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             }
             else
             {
-                string dbContextTypeName = _codeGeneratorViewModel.DbContextModelType.TypeName;
-                ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
-                CodeType dbContext = codeTypeService.GetCodeType(project: Context.ActiveProject, fullName: dbContextTypeName);
-                IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
-                ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+                //string dbContextTypeName = _codeGeneratorViewModel.DbContextModelType.TypeName;
+                //ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
+                //CodeType dbContext = codeTypeService.GetCodeType(project: Context.ActiveProject, fullName: dbContextTypeName);
+                //IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
+                //ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
+                var efMetadata = GetEfMetadata();
                 _ModelMetadataVM = new ModelMetadataViewModel(efMetadata: efMetadata);
             }
 
@@ -179,11 +177,11 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             ICodeTypeService codeTypeService = GetService<ICodeTypeService>();
             CodeType dbContext = codeTypeService.GetCodeType(project: project, fullName: dbContextTypeName);
 
+            //efService.AddRequiredEntity 正式會沒回應,改GetEfMetadata反射Model設定Metadata
             // Get the Entity Framework Meta Data
-            IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
+            //IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
             //ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context,
-            //    contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
-
+            //    contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName)
 
             var efMetadata = GetEfMetadata();
 
@@ -194,7 +192,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             string viewPrefix = codeGeneratorViewModel.ViewPrefix;
             string programTitle = codeGeneratorViewModel.ProgramTitle;
 
-            Alert.Trace("AddMvcController");
+            //Alert.Trace("AddMvcController");
 
             if (codeGeneratorViewModel.GenerateApiController)
             {
@@ -373,7 +371,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
         private void AddControllerHandler(Project project, string controllerName, string controllerRootName, string outputPath,
             string ContextTypeName, CodeType modelType, ModelMetadata efMetadata, string viewPrefix, bool overwrite, string t4Name)
         {
-            Alert.Trace(t4Name);
+            //Alert.Trace(t4Name);
 
             if (modelType == null)
             {
@@ -417,7 +415,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 , templateParameters: templateParams
                 , skipIfExists: !overwrite);
 
-            //_visualStudioUtils.Open(PathHelper.GetProjectItemFullPath(project, outputPath, ".cs"));
+            _visualStudioUtils.Open(PathHelper.GetProjectItemFullPath(project, outputPath, ".cs"));
         }
 
         private void AddListViewModel(Project project,

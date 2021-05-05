@@ -16,7 +16,15 @@ namespace Happy.Scaffolding.MVC.Utils
             }
             else
             {
-                return compiler.GetTypeOutput(new CodeTypeReference(type)).Replace("System.", "");
+                if (type.FullName.StartsWith("System"))
+                {
+
+                    return compiler.GetTypeOutput(new CodeTypeReference(type)).Replace("System.", "");
+                }
+                else
+                {
+                    return type.Name;
+                }
             }
         }
 

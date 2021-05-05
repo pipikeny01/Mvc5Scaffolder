@@ -3,6 +3,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Happy.Scaffolding.MVC.Utils;
@@ -25,6 +26,7 @@ namespace Happy.Scaffolding.MVC.Models.Tests
         }
         [TestMethod()]
         public void TestToMetadata()
+        
         {
             var metadataHelper = new MetadataHelper(@"D:\Users\pigi0\Source\Repos\SPATemplate\Solustion\DAL\bin\Debug\DAL.dll");
             var metadatas = metadataHelper.ToMetadata("TestScaffold");
@@ -35,6 +37,54 @@ namespace Happy.Scaffolding.MVC.Models.Tests
             var dateTimeNullValue = metadatas.Properties.FirstOrDefault(p=>p.PropertyName == "ModTime");
             Assert.AreEqual("DateTime?", dateTimeNullValue.ShortTypeName);
         }
+
+
+        [TestMethod()]
+        public void TestDomainLoadAssembly()
+        
+        {
+            AppDomain ad = AppDomain.CreateDomain("Test");
+            Loader loader = (Loader)ad.CreateInstanceFromAndUnwrap(
+                typeof(Loader).Assembly.EscapedCodeBase,
+                typeof(Loader).FullName);
+
+            var file = @"D:\Users\pigi0\Source\Repos\SPATemplate\Solustion\DAL\bin\Debug\DAL.dll";
+            var assembly = loader.LoadAssembly(file);
+            AppDomain.Unload(ad);
+
+            var types = assembly.GetTypes();
+
+            //var assembly2 = Assembly.LoadFrom(file);
+            //var t2 = assembly2.GetTypes();
+
+            var expect =  IsFileLocked(new FileInfo(file));
+
+            Assert.AreEqual(expect, false);
+
+
+        }
+        protected virtual bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
+        }
+
 
 
         [TestMethod()]
@@ -49,5 +99,33 @@ namespace Happy.Scaffolding.MVC.Models.Tests
         }
 
 
+        [TestMethod()]
+        public void TestClassToAliases()
+        {
+            Assert.AreEqual("TestType", typeof(TestType).ToAliases());
+        }
+
+        [TestMethod()]
+        public void TestEnumToAliases()
+        {
+            Assert.AreEqual("TestEnum", typeof(TestEnum).ToAliases());
+        }
+
+
+        [TestMethod()]
+        public void TesGenericTypeToAliases()
+        {
+            Assert.AreEqual("Collections.Generic.List<string>", typeof(List<string>).ToAliases());
+        }
+
+
+    }
+
+    public class TestEnum
+    {
+    }
+
+    public class TestType
+    {
     }
 }

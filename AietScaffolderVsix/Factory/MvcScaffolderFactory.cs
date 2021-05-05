@@ -18,14 +18,14 @@ namespace AietMvcScaffolding.Factory
                 displayName: "Aiet SapTemplate 程式碼產生器",
                 description: "產生 ApiController Service Repository ViewModel 程式碼範本",
                 author: "Kenny",
-                version: new Version(major: 1, minor: 0, build: 0),
+                version: new Version(major: 1, minor: 0, build: 1),
                 id: nameof(MvcScaffolder)))
         {
         }
 
         public override ICodeGenerator CreateInstance(CodeGenerationContext context)
         {
-            Alert.Trace(GetExtensionInstallationDirectoryOrNull());
+            //Alert.Trace(GetExtensionInstallationDirectoryOrNull());
             //return new DoNothingCodeGenerator(context, Information);
             return new MvcScaffolder(context: context, information: Information);
         }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNet.Scaffolding.Core.Metadata;
@@ -17,7 +19,10 @@ namespace Happy.Scaffolding.MVC.Utils
 
         public ModelMetadata ToMetadata(string dbContextTypeName)
         {
-            var assembly = Assembly.LoadFrom(_assemblyPath);
+            var assembly = LoadAssemblyByNewDomain();
+
+            var isFileLocked = IsFileLocked(new FileInfo(_assemblyPath));
+
             var modelMetadata = new ModelMetadata();
             modelMetadata.EntitySetName = dbContextTypeName;
 
@@ -46,6 +51,24 @@ namespace Happy.Scaffolding.MVC.Utils
             modelMetadata.Properties = propertyMetadatas.ToArray();
 
             return modelMetadata;
+        }
+
+        /// <summary>
+        /// Create Domain Load Assembly ,因為Assembly.Load不會Dispose
+        /// </summary>
+        /// <returns></returns>
+        private Assembly LoadAssemblyByNewDomain()
+        {
+            AppDomain ad = AppDomain.CreateDomain("load" + Guid.NewGuid());
+            Loader loader = (Loader) ad.CreateInstanceFromAndUnwrap(
+                typeof(Loader).Assembly.EscapedCodeBase,
+                typeof(Loader).FullName);
+
+            var assembly = loader.LoadAssembly(_assemblyPath);
+
+            AppDomain.Unload(ad);
+
+            return assembly;
         }
 
         private static PropertyMetadata CreateKeyMata(PropertyInfo key)
@@ -78,5 +101,54 @@ namespace Happy.Scaffolding.MVC.Utils
                 TypeName = key.PropertyType.Name
             };
         }
+
+        protected virtual bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
+        }
+
     }
+
+    public class Loader : MarshalByRefObject
+    {
+        private Assembly _assembly;
+
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
+        public Assembly LoadAssembly(string path)
+        {
+            return Assembly.Load(AssemblyName.GetAssemblyName(path));
+        }
+
+        public object ExecuteStaticMethod(string typeName, string methodName, params object[] parameters)
+        {
+            Type type = _assembly.GetType(typeName);
+            // TODO: this won't work if there are overloads available
+            MethodInfo method = type.GetMethod(
+                methodName,
+                BindingFlags.Static | BindingFlags.Public);
+            return method.Invoke(null, parameters);
+        }
+    }
+
 }
