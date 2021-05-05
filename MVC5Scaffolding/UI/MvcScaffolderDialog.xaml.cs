@@ -30,9 +30,5 @@ namespace Happy.Scaffolding.MVC.UI
             DataContext = viewModel;
         }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-        }
     }
 }

@@ -269,7 +269,7 @@ namespace Happy.Scaffolding.MVC.UI
             {
                 Validate();
 
-                if (value == _GenerateApiController)
+                if (value == _GenerateService)
                 {
                     return;
                 }
@@ -287,7 +287,7 @@ namespace Happy.Scaffolding.MVC.UI
             {
                 Validate();
 
-                if (value == _GenerateApiController)
+                if (value == _GenerateRepository)
                 {
                     return;
                 }
