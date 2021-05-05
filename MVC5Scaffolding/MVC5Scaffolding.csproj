@@ -230,6 +230,7 @@
     <Compile Include="Utils\PathHelper.cs" />
     <Compile Include="Utils\ProjectItemUtils.cs" />
     <Compile Include="Utils\StorageMan.cs" />
+    <Compile Include="Utils\TypeExtensions.cs" />
     <Compile Include="Utils\VisualStudioUtils.cs" />
     <Compile Include="VsConstants.cs" />
   </ItemGroup>

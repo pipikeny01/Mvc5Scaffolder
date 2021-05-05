@@ -74,7 +74,7 @@ namespace Happy.Scaffolding.MVC.Utils
                 PropertyName = key.Name,
                 RelatedModel = null,
                 Scaffold = false,
-                ShortTypeName = key.PropertyType.Name,
+                ShortTypeName = key.PropertyType.ToAliases(),
                 TypeName = key.PropertyType.Name
             };
         }
