@@ -91,7 +91,8 @@ namespace Happy.Scaffolding.MVC.Scaffolders
                 //CodeType dbContext = codeTypeService.GetCodeType(project: Context.ActiveProject, fullName: dbContextTypeName);
                 //IEntityFrameworkService efService = Context.ServiceProvider.GetService<IEntityFrameworkService>();
                 //ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context, contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName);
-                var efMetadata = GetEfMetadata();
+                var fullName = modelType.FullName;
+                var efMetadata = GetEfMetadata(fullName);
                 _ModelMetadataVM = new ModelMetadataViewModel(efMetadata: efMetadata);
             }
 
@@ -183,7 +184,7 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //ModelMetadata efMetadata = efService.AddRequiredEntity(context: Context,
             //    contextTypeFullName: dbContextTypeName, entityTypeFullName: modelType.FullName)
 
-            var efMetadata = GetEfMetadata();
+            var efMetadata = GetEfMetadata(modelType.FullName);
 
             // Create Controller
             string controllerName = codeGeneratorViewModel.ControllerName;
@@ -294,12 +295,12 @@ namespace Happy.Scaffolding.MVC.Scaffolders
             //}
         }
 
-        private ModelMetadata GetEfMetadata()
+        private ModelMetadata GetEfMetadata(string dbContextTypeName)
         {
             var dalProject = (Project) _visualStudioUtils.FindProjectByName("DAL").Object;
             var dal_dllPath = Path.Combine(dalProject.GetFullPath(), "bin", "Debug", "DAL.dll");
             var metadataHelper = new MetadataHelper(dal_dllPath);
-            ModelMetadata efMetadata = metadataHelper.ToMetadata("TestScaffold");
+            ModelMetadata efMetadata = metadataHelper.ToMetadata(dbContextTypeName);
             return efMetadata;
         }
 

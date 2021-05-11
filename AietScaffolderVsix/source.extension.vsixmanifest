@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="AietScaffolderVsix.eaf7f140-f494-476c-81be-03701276dcf1" Version="1.0" Language="en-US" Publisher="kenny" />
+        <Identity Id="AietScaffolderVsix.eaf7f140-f494-476c-81be-03701276dcf1" Version="1.3" Language="en-US" Publisher="kenny" />
         <DisplayName>AietScaffolderVsix</DisplayName>
         <Description xml:space="preserve">產生 ApiController Service Repository ViewModel 程式碼範本產生</Description>
     </Metadata>

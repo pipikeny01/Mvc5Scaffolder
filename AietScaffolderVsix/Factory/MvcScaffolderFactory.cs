@@ -18,7 +18,7 @@ namespace AietMvcScaffolding.Factory
                 displayName: "Aiet SapTemplate 程式碼產生器",
                 description: "產生 ApiController Service Repository ViewModel 程式碼範本",
                 author: "Kenny",
-                version: new Version(major: 1, minor: 0, build: 1),
+                version: new Version(major: 1, minor: 0, build: 3),
                 id: nameof(MvcScaffolder)))
         {
         }

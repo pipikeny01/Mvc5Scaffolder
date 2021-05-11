@@ -23,19 +23,18 @@ namespace Happy.Scaffolding.MVC.Utils
         {
             var assembly = LoadAssemblyByNewDomain();
 
-            var isFileLocked = IsFileLocked(new FileInfo(_assemblyPath));
-
             var modelMetadata = new ModelMetadata();
-            modelMetadata.EntitySetName = dbContextTypeName;
 
-            var contextType = assembly.GetTypes().FirstOrDefault(p => p.Name == dbContextTypeName);
+            var contextType = assembly.GetTypes().FirstOrDefault(p => p.FullName == dbContextTypeName);
 
-            List<PropertyMetadata> keypropertyMetadatas = new List<PropertyMetadata>();
-            List<PropertyMetadata> propertyMetadatas = new List<PropertyMetadata>();
+            modelMetadata.EntitySetName = contextType.Name;
+
+            var keypropertyMetadatas = new List<PropertyMetadata>();
+            var propertyMetadatas = new List<PropertyMetadata>();
             foreach (var propertyInfo in contextType.GetProperties())
             {
                 //key
-                if (propertyInfo.CustomAttributes.Any(attr => attr.AttributeType == typeof(KeyAttribute)))
+                if (IsKey(propertyInfo))
                 {
                     var propertyMetadata = CreateKeyMata(propertyInfo);
                     keypropertyMetadatas.Add(propertyMetadata);
@@ -53,6 +52,12 @@ namespace Happy.Scaffolding.MVC.Utils
             modelMetadata.Properties = propertyMetadatas.ToArray();
 
             return modelMetadata;
+        }
+
+        private static bool IsKey(PropertyInfo propertyInfo)
+        {
+            return propertyInfo.Name.ToLower().EndsWith("id") ||
+                   propertyInfo.CustomAttributes.Any(attr => attr.AttributeType == typeof(KeyAttribute));
         }
 
         /// <summary>
